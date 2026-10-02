@@ -1,0 +1,369 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <span class="eyebrow">INSTITUTION / KITCHEN COMMAND CENTER</span>
+            <h1>Operations Overview</h1>
+            <p>Welcome, <strong><%= currentUser.name %></strong>. Monitor production, surplus and redistribution.</p>
+        </div>
+        <div class="header-actions">
+            <a href="/donor/add-food" class="btn btn-primary">＋ Add Food</a>
+            <a href="/donor/intelligence" class="btn btn-secondary">🧠 View Intelligence</a>
+            <a href="/donor/history" class="btn btn-secondary">📋 View Listings</a>
+        </div>
+    </div>
+
+    <!-- Overview Stats -->
+    <div class="stats-grid stats-grid-4">
+        <div class="stat-card">
+            <div class="stat-value"><%= stats.totalProduced.toLocaleString() %></div>
+            <div class="stat-label">Total food produced</div>
+        </div>
+        <div class="stat-card stat-info">
+            <div class="stat-value"><%= (stats.totalProduced - stats.totalSurplus).toLocaleString() %></div>
+            <div class="stat-label">Food consumed</div>
+        </div>
+        <div class="stat-card stat-warning">
+            <div class="stat-value"><%= stats.totalSurplus.toLocaleString() %></div>
+            <div class="stat-label">Current surplus</div>
+        </div>
+        <div class="stat-card stat-success">
+            <div class="stat-value"><%= stats.completedDonations %></div>
+            <div class="stat-label">Food redistributed</div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid-2">
+        <!-- AI Intelligence Section -->
+        <section class="panel ai-summary-card">
+            <div class="panel-header">
+                <div>
+                    <span class="panel-kicker">AI INTELLIGENCE</span>
+                    <h2>Demand Forecast</h2>
+                </div>
+                <span class="smart-badge"><%= aiData.forecast.confidencePct || aiData.forecast.confidenceScore %>% confidence (<%= aiData.forecast.confidenceLevel %>)</span>
+            </div>
+            <div class="metric-line">
+                <span>Demand forecast:</span>
+                <strong><%= aiData.forecast.predictedDemand.toLocaleString() %> portions</strong>
+            </div>
+            <div class="metric-line <%= aiData.surplus.riskLevel === 'HIGH' ? 'warning' : '' %>">
+                <span>Predicted surplus:</span>
+                <strong><%= aiData.surplus.predictedSurplus.toLocaleString() %> portions</strong>
+            </div>
+            <div class="metric-line">
+                <span>Production recommendation:</span>
+                <strong><%= aiData.recommendation.recommendedProduction.toLocaleString() %> portions</strong>
+            </div>
+            <div class="metric-line">
+                <span>Risk indicator:</span>
+                <strong><%= aiData.surplus.riskLevel %> Risk</strong>
+            </div>
+            <div class="panel-footer" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+                <a class="text-link" href="/donor/intelligence">View full Intelligence Report →</a>
+            </div>
+        </section>
+
+        <!-- Sustainability Impact -->
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <span class="panel-kicker">PHASE 10 ANALYTICS</span>
+                    <h2>Sustainability Impact</h2>
+                </div>
+                <span class="smart-badge">ACTUAL RECORDS</span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div style="background: var(--surface-light); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Food Diverted</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-dark);"><%= impact.foodDivertedKg.toLocaleString() %> kg</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem;">From verified handovers & utilization</div>
+                </div>
+                <div style="background: var(--surface-light); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Data Coverage</div>
+                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark);"><%= impact.dataCoverage.completedHandoverRecords + impact.dataCoverage.confirmedUtilizationRecords %> completed actions</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem;">From <%= impact.dataCoverage.quantityRecords %> listings</div>
+                </div>
+            </div>
+
+            <div class="impact-grid" style="margin-bottom: 1rem;">
+                <div class="impact-item"><span>Redistributed</span><strong><%= impact.redistributedKg.toLocaleString() %> kg</strong></div>
+                <div class="impact-item"><span>Processed / Upcycled</span><strong><%= impact.processedKg.toLocaleString() %> kg</strong></div>
+                <div class="impact-item"><span>Organic Recovery</span><strong><%= impact.organicRecoveryKg.toLocaleString() %> kg</strong></div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-light); padding-top: 1rem;">
+                <h4 style="font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-dark);">Estimated Environmental Impact</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--surface); border-radius: var(--radius-sm);">
+                        <span style="color: var(--text-secondary);">CO₂e Avoided</span>
+                        <strong>
+                            <% if (impact.estimatedImpact.co2eAvoidedKg !== null) { %>
+                                <%= impact.estimatedImpact.co2eAvoidedKg.toLocaleString() %> kg
+                            <% } else { %>
+                                <span style="color: var(--warning-dark); font-weight: 400; font-size: 0.75rem;">Unavailable</span>
+                            <% } %>
+                        </strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--surface); border-radius: var(--radius-sm);">
+                        <span style="color: var(--text-secondary);">Water Footprint</span>
+                        <strong>
+                            <% if (impact.estimatedImpact.waterAvoidedLiters !== null) { %>
+                                <%= impact.estimatedImpact.waterAvoidedLiters.toLocaleString() %> L
+                            <% } else { %>
+                                <span style="color: var(--warning-dark); font-weight: 400; font-size: 0.75rem;">Unavailable</span>
+                            <% } %>
+                        </strong>
+                    </div>
+                </div>
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.75rem; font-style: italic;">
+                    *Environmental impact values are estimates derived from configured assumptions and should not be interpreted as measured site-specific impacts.
+                </p>
+                <% impact.warnings.forEach(w => { %>
+                    <p style="font-size: 0.75rem; color: var(--warning-dark); margin-top: 0.25rem;">⚠️ <%= w %></p>
+                <% }) %>
+            </div>
+        </section>
+    </div>
+
+    <!-- Live Monitoring -->
+    <section class="section-block panel" style="margin-bottom: 2.5rem;" id="iotMonitorSection">
+        <div class="panel-header" style="margin-bottom: 0.5rem;">
+            <div>
+                <span class="panel-kicker">TELEMETRY</span>
+                <h2>Live Monitoring</h2>
+            </div>
+            <span class="badge badge-info" id="iotConnectionStatus">Connecting...</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 1.25rem;">
+            SIMULATED IoT TELEMETRY • <span id="iotTimestamp">Waiting for data...</span>
+        </p>
+
+        <!-- Risk Alert Banner -->
+        <div id="iotRiskAlert" style="display: none; padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 500;">
+            <div id="iotRiskMessage"></div>
+            <div id="iotRiskAction" style="font-size: 0.85rem; margin-top: 0.35rem; font-weight: 400; opacity: 0.9;"></div>
+        </div>
+
+        <div class="stats-grid stats-grid-4">
+            <div class="stat-card" id="cardTemp">
+                <div class="stat-value text-muted" id="valTemp">--°C</div>
+                <div class="stat-label">Temperature</div>
+                <div style="font-size: 0.75rem; margin-top: 0.5rem; font-weight: 700;" id="statusTemp">--</div>
+            </div>
+            <div class="stat-card" id="cardHum">
+                <div class="stat-value text-muted" id="valHum">--%</div>
+                <div class="stat-label">Humidity</div>
+                <div style="font-size: 0.75rem; margin-top: 0.5rem; font-weight: 700;" id="statusHum">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value text-muted" id="valEnergy">--</div>
+                <div class="stat-label">Energy (kWh)</div>
+                <div style="font-size: 0.75rem; margin-top: 0.5rem; font-weight: 700; color: var(--info);">MONITORING</div>
+            </div>
+            <div class="stat-card" id="cardMachine">
+                <div class="stat-value text-muted" id="valMachine">--</div>
+                <div class="stat-label">Machine Status</div>
+                <div style="font-size: 0.75rem; margin-top: 0.5rem; font-weight: 700;" id="statusMachine">--</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Activity & Handover -->
+    <% if (activeClaims && activeClaims.length > 0) { %>
+    <section class="section-block">
+        <h2 class="section-heading">🔐 Pending Handovers</h2>
+        <div class="cards-grid">
+            <% activeClaims.forEach(claim => { %>
+            <div class="card card-warning">
+                <div class="card-header">
+                    <h3><%= claim.food.itemName %></h3>
+                    <span class="badge badge-warning">Awaiting Handover</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Claim received by:</strong> <%= claim.receiver.name %></p>
+                    <p><strong>Organization:</strong> <%= claim.receiver.organization || 'Community recipient' %></p>
+                    <p><strong>Quantity:</strong> <%= claim.food.quantity %></p>
+                </div>
+                <div class="card-footer">
+                    <form action="/donor/verify-otp" method="POST" class="otp-form">
+                        <input type="hidden" name="claimId" value="<%= claim._id %>">
+                        <input type="text" name="otp" placeholder="6-digit OTP" maxlength="6" pattern="[0-9]{6}" required class="otp-input">
+                        <button type="submit" class="btn btn-success btn-sm">Verify Handover</button>
+                    </form>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </section>
+    <% } %>
+
+    <section class="section-block">
+        <div class="section-heading-row">
+            <h2 class="section-heading">🎯 Recipient Matching (Phase 6)</h2>
+        </div>
+        
+        <% const availableMatches = listings.filter(l => l.status === 'available'); %>
+        <% if (availableMatches.length === 0) { %>
+            <div class="empty-state" style="margin-bottom: 2rem;">
+                <h3>No active surplus for matching</h3>
+                <p>Register surplus food to see AI-assisted recipient matches.</p>
+            </div>
+        <% } else { %>
+            <div class="cards-grid" style="margin-bottom: 2rem;">
+                <% availableMatches.forEach(item => { %>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><%= item.itemName %></h3>
+                        <span class="badge badge-info"><%= item.matchCount %> Matches</span>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                            <strong>Surplus:</strong> <%= item.surplusQuantity || item.quantity %> <%= item.unit || '' %>
+                        </p>
+                        
+                        <% if (item.topMatch) { %>
+                            <div style="background: var(--surface-light); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <strong style="color: var(--primary-dark);"><%= item.topMatch.recipientName %></strong>
+                                    <span class="match-score" style="font-size: 0.85rem;"><%= item.topMatch.matchScore %>% Match</span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.75rem; color: var(--text-secondary);">
+                                    <div><strong>Distance:</strong> <%= item.logisticsDetails && item.logisticsDetails.distanceKm !== null ? item.logisticsDetails.distanceKm + ' km' : 'Unknown' %></div>
+                                    <div><strong>Fit:</strong> <%= item.topMatch.quantitySuitability %></div>
+                                </div>
+                                
+                                <% if (item.logisticsDetails) { %>
+                                <div style="margin-top: 0.75rem; border-top: 1px dashed var(--border); padding-top: 0.75rem;">
+                                    <p style="font-size: 0.75rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.25rem;">SMART LOGISTICS</p>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <span class="badge badge-<%= item.logisticsDetails.feasibility === 'FEASIBLE' ? 'success' : item.logisticsDetails.feasibility === 'TIGHT' ? 'warning' : 'danger' %>"><%= item.logisticsDetails.feasibility %></span>
+                                        <% if (item.logisticsDetails.logisticsPriority !== 'UNKNOWN') { %>
+                                            <span class="badge badge-<%= item.logisticsDetails.logisticsPriority === 'URGENT' ? 'danger' : item.logisticsDetails.logisticsPriority === 'HIGH' ? 'warning' : 'info' %>">Priority: <%= item.logisticsDetails.logisticsPriority %></span>
+                                        <% } %>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.75rem; color: var(--text-secondary);">
+                                        <div><strong>Travel:</strong> <%= item.logisticsDetails.estimatedTravelMinutes !== null ? '~' + item.logisticsDetails.estimatedTravelMinutes + ' min' : 'Unknown' %></div>
+                                        <div><strong>ETA:</strong> <%= item.logisticsDetails.estimatedArrivalTime ? new Date(item.logisticsDetails.estimatedArrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Unknown' %></div>
+                                        <div><strong>Window:</strong> <%= item.logisticsDetails.pickupWindowMinutes ? item.logisticsDetails.pickupWindowMinutes + ' min' : '—' %></div>
+                                        <div><strong>Remaining Time:</strong> <%= item.logisticsDetails.remainingUsableMinutes ? item.logisticsDetails.remainingUsableMinutes + ' min' : '—' %></div>
+                                    </div>
+                                    <% if (item.logisticsDetails.reasons && item.logisticsDetails.reasons.length > 0) { %>
+                                        <p style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--text-muted); font-style: italic;">
+                                            <%= item.logisticsDetails.reasons[0] %>
+                                        </p>
+                                    <% } %>
+                                    <% if (item.logisticsDetails.warnings && item.logisticsDetails.warnings.length > 0) { %>
+                                        <p style="font-size: 0.75rem; margin-top: 0.25rem; color: var(--danger);">
+                                            ⚠️ <%= item.logisticsDetails.warnings[0] %>
+                                        </p>
+                                    <% } %>
+                                </div>
+                                <% } %>
+                                
+                                <% if (item.topMatch.reasons && item.topMatch.reasons.length > 0) { %>
+                                    <p style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--success); font-weight: 500;">
+                                        ✓ <%= item.topMatch.reasons[0] %>
+                                    </p>
+                                <% } %>
+                            </div>
+                        <% } else { %>
+                            <p style="font-size: 0.85rem; color: var(--warning-dark); margin-bottom: 0.75rem;">No suitable recipients found.</p>
+                        <% } %>
+
+                        <% if (item.processingInfo) { %>
+                            <div style="margin-top: 1rem; border-top: 2px solid var(--border-light); padding-top: 1rem;">
+                                <p style="font-size: 0.75rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem; text-transform: uppercase;">FOOD PROCESSING INTELLIGENCE (PHASE 9)</p>
+                                
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.85rem; font-weight: 600;">Pathway: <%= item.processingInfo.recommendedPath.replace('_', ' ') %></span>
+                                    <span class="badge badge-<%= item.processingInfo.confidence === 'High' ? 'success' : item.processingInfo.confidence === 'Medium' ? 'info' : 'warning' %>"><%= item.processingInfo.confidence %> Confidence</span>
+                                </div>
+
+                                <% if (item.processingInfo.reasons.length > 0) { %>
+                                    <ul style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem; padding-left: 1rem;">
+                                        <% item.processingInfo.reasons.forEach(r => { %>
+                                            <li><%= r %></li>
+                                        <% }) %>
+                                    </ul>
+                                <% } %>
+
+                                <% if (item.processingInfo.alternatives.length > 0) { %>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                                        <strong>Alternatives:</strong> <%= item.processingInfo.alternatives.map(a => a.replace('_', ' ')).join(', ') %>
+                                    </div>
+                                <% } %>
+
+                                <% if (item.processingInfo.warnings.length > 0) { %>
+                                    <% item.processingInfo.warnings.forEach(w => { %>
+                                        <div style="font-size: 0.75rem; color: var(--danger); margin-top: 0.25rem;">
+                                            ⚠️ <%= w %>
+                                        </div>
+                                    <% }) %>
+                                <% } %>
+
+                                <% if (item.processingInfo.humanReviewRequired) { %>
+                                    <div style="font-size: 0.7rem; font-style: italic; color: var(--text-muted); margin-top: 0.5rem; border-top: 1px dashed var(--border-light); padding-top: 0.25rem;">
+                                        *Decision-support prototype. Human review required.
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </section>
+
+    <section class="section-block">
+        <div class="section-heading-row">
+            <h2 class="section-heading">Recent Activity (Listings)</h2>
+        </div>
+        <% if (listings.length === 0) { %>
+            <div class="empty-state">
+                <h3>No activity yet</h3>
+                <p>Register a food listing to begin.</p>
+            </div>
+        <% } else { %>
+            <div class="cards-grid">
+                <% listings.slice(0,4).forEach(item => { %>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><%= item.itemName %></h3>
+                        <span class="badge badge-<%= item.status === 'available' ? 'success' : item.status === 'claimed' ? 'warning' : item.status === 'completed' ? 'info' : 'danger' %>"><%= item.status %></span>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Surplus Detected:</strong> <%= item.surplusQuantity || item.quantity %> <%= item.unit || '' %></p>
+                        <p><strong>Food listing created:</strong> <%= new Date(item.createdAt).toLocaleDateString() %></p>
+                        <p><strong>Quality risk status:</strong> <%= item.qualityScore || '—' %>/100 <%= item.qualityStatus || '' %></p>
+                        
+                        <% if (item.traceability) { %>
+                        <div style="margin-top: 1rem; border-top: 1px dashed var(--border); padding-top: 0.75rem;">
+                            <p style="font-size: 0.75rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.25rem;">TRACEABILITY (PHASE 8)</p>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.75rem; color: var(--text-secondary);">
+                                <div><strong>Lifecycle:</strong> <%= item.status.toUpperCase() %></div>
+                                <div><strong>Events:</strong> <%= item.traceability.eventCount %></div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                <strong>Integrity:</strong> 
+                                <% if (item.traceability.integrity.valid) { %>
+                                    <span style="color: var(--success); font-weight: bold;">VERIFIED ✓</span>
+                                <% } else { %>
+                                    <span style="color: var(--danger); font-weight: bold;">HASH MISMATCH ❌</span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </section>
+</div>
+
+<%- include('../partials/footer') %>
+<script src="/js/iot-client.js"></script>

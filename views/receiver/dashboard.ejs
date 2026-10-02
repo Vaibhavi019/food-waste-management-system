@@ -1,0 +1,163 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <span class="eyebrow">NGO / COMMUNITY COMMAND CENTER</span>
+            <h1>Redistribution Hub</h1>
+            <p>AI-prioritized surplus food matched for timely collection.</p>
+        </div>
+        <div class="header-actions">
+            <a href="/receiver/available-food" class="btn btn-primary">🍲 Browse Food</a>
+            <a href="/receiver/my-claims" class="btn btn-secondary">📋 My Claims</a>
+            <button class="btn btn-secondary disabled" disabled>🚚 Track Redistribution</button>
+        </div>
+    </div>
+
+    <!-- Overview Stats -->
+    <div class="stats-grid stats-grid-4">
+        <div class="stat-card">
+            <div class="stat-value"><%= availableFood.length %></div>
+            <div class="stat-label">Available surplus</div>
+        </div>
+        <div class="stat-card stat-info">
+            <div class="stat-value"><%= stats.prioritizedMatches %></div>
+            <div class="stat-label">Recommended food</div>
+        </div>
+        <div class="stat-card stat-warning">
+            <div class="stat-value"><%= stats.totalClaims %></div>
+            <div class="stat-label">Claim status (active)</div>
+        </div>
+        <div class="stat-card stat-success">
+            <div class="stat-value"><%= stats.completedClaims %></div>
+            <div class="stat-label">Completed pickups</div>
+        </div>
+    </div>
+
+    <section class="section-block">
+        <div class="section-heading-row">
+            <h2 class="section-heading">🎯 Recommended Food Matches</h2>
+            <a href="/receiver/available-food" class="text-link">Browse all available →</a>
+        </div>
+
+        <% if (availableFood.length === 0) { %>
+            <div class="empty-state">
+                <h3>No live surplus right now</h3>
+                <p>The network is currently clear. New institutional surplus will appear here automatically.</p>
+            </div>
+        <% } else { %>
+            <div class="cards-grid">
+                <% availableFood.slice(0, 6).forEach(food => { %>
+                <div class="card <%= food.urgency === 'Critical' ? 'card-critical' : '' %>" style="display:flex; flex-direction:column; justify-content:space-between;">
+                    <div>
+                        <div class="card-header">
+                            <h3><%= food.itemName %></h3>
+                            <span class="match-score"><%= food.matchScore %>% Match</span>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Explainable Intelligent Match</strong></p>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.8rem; margin: 0.5rem 0 1rem 0; color: var(--text-secondary);">
+                                <div><strong>Food fit:</strong> <%= food.matchDetails.foodTypeCompatibility %></div>
+                                <div><strong>Quantity:</strong> <%= food.matchDetails.quantitySuitability %></div>
+                                <div><strong>Distance:</strong> <%= food.matchDetails.distanceKm !== null ? food.matchDetails.distanceKm + ' km' : 'Unknown' %></div>
+                                <div><strong>Time:</strong> <%= food.matchDetails.timeSuitability %></div>
+                            </div>
+                            
+                            <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.25rem;">Why this match?</p>
+                            <ul style="padding-left:1.2rem; font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem;">
+                                <% food.matchDetails.reasons.forEach(r => { %>
+                                    <li>✓ <%= r %></li>
+                                <% }) %>
+                            </ul>
+
+                            <% if (food.matchDetails.warnings.length > 0) { %>
+                                <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.25rem; color: var(--danger);">Warnings:</p>
+                                <ul style="padding-left:1.2rem; font-size:0.85rem; color: var(--danger); margin-bottom:1rem;">
+                                    <% food.matchDetails.warnings.forEach(w => { %>
+                                        <li>⚠️ <%= w %></li>
+                                    <% }) %>
+                                </ul>
+                            <% } %>
+                            
+                            <% if (food.logisticsDetails) { %>
+                                <div style="margin-top: 0.5rem; margin-bottom: 1rem; border-top: 1px dashed var(--border); padding-top: 0.75rem;">
+                                    <p style="font-size: 0.75rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.25rem;">SMART LOGISTICS</p>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <span class="badge badge-<%= food.logisticsDetails.feasibility === 'FEASIBLE' ? 'success' : food.logisticsDetails.feasibility === 'TIGHT' ? 'warning' : 'danger' %>"><%= food.logisticsDetails.feasibility %></span>
+                                        <% if (food.logisticsDetails.logisticsPriority !== 'UNKNOWN') { %>
+                                            <span class="badge badge-<%= food.logisticsDetails.logisticsPriority === 'URGENT' ? 'danger' : food.logisticsDetails.logisticsPriority === 'HIGH' ? 'warning' : 'info' %>">Priority: <%= food.logisticsDetails.logisticsPriority %></span>
+                                        <% } %>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.75rem; color: var(--text-secondary);">
+                                        <div><strong>Travel:</strong> <%= food.logisticsDetails.estimatedTravelMinutes !== null ? '~' + food.logisticsDetails.estimatedTravelMinutes + ' min' : 'Unknown' %></div>
+                                        <div><strong>ETA:</strong> <%= food.logisticsDetails.estimatedArrivalTime ? new Date(food.logisticsDetails.estimatedArrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Unknown' %></div>
+                                    </div>
+                                </div>
+                            <% } %>
+                            
+                            <p style="margin-bottom: 0.25rem;"><strong>Quantity:</strong> <%= food.quantity %></p>
+                            <p style="margin-bottom: 1rem;"><strong>Donor:</strong> <%= food.donor.organization || food.donor.name %></p>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/receiver/claim/<%= food._id %>" class="btn btn-primary btn-block">Claim & Schedule Pickup</a>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </section>
+
+    <% if (myClaims.length > 0) { %>
+    <section class="section-block">
+        <h2 class="section-heading">📋 Claim Status</h2>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Food</th><th>Status</th><th>OTP</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                <% myClaims.forEach(claim => { %>
+                    <tr>
+                        <td><strong><%= claim.food ? claim.food.itemName : 'N/A' %></strong></td>
+                        <td><span class="badge badge-<%= claim.status === 'claimed' ? 'warning' : claim.status === 'completed' ? 'success' : 'danger' %>"><%= claim.status %></span></td>
+                        <td>
+                            <% if (claim.status === 'claimed') { %>
+                                <span class="otp-display"><%= claim.otp %></span>
+                            <% } else { %>—<% } %>
+                        </td>
+                        <td><%= new Date(claim.createdAt).toLocaleDateString() %></td>
+                    </tr>
+                    <% if (claim.traceability && claim.traceability.events.length > 0) { %>
+                    <tr>
+                        <td colspan="4" style="background: var(--surface-light); padding: 1rem;">
+                            <div style="font-size: 0.75rem; color: var(--text-dark);">
+                                <strong style="display: block; margin-bottom: 0.5rem; text-transform: uppercase;">Food Traceability (Phase 8)</strong>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                                    <% claim.traceability.events.forEach(ev => { %>
+                                        <div style="padding: 0.25rem 0.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);">
+                                            ✓ <%= ev.eventLabel %>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                                <div style="color: var(--text-secondary);">
+                                    Integrity: 
+                                    <% if (claim.traceability.integrity.valid) { %>
+                                        <span style="color: var(--success); font-weight: bold;">VERIFIED ✓</span>
+                                    <% } else { %>
+                                        <span style="color: var(--danger); font-weight: bold;">HASH MISMATCH ❌</span>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <% } %>
+                <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,62 @@
+<%- include('../partials/header') %>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>Claim Food</h1>
+            <p>Provide your details to claim this food item</p>
+        </div>
+
+        <div class="claim-food-info">
+            <div class="card">
+                <div class="card-header">
+                    <h3>
+                        <%= food.itemName %>
+                    </h3>
+                    <span class="badge badge-success">Available</span>
+                </div>
+                <div class="card-body">
+                    <div class="food-detail"><span class="detail-label">📦 Quantity:</span>
+                        <%= food.quantity %>
+                    </div>
+                    <div class="food-detail"><span class="detail-label">📍 Location:</span>
+                        <%= food.pickupLocation %>
+                    </div>
+                    <div class="food-detail"><span class="detail-label">👤 Donor:</span>
+                        <%= food.donor.name %>
+                    </div>
+                    <div class="food-detail"><span class="detail-label">⏰ Expires:</span>
+                        <%= new Date(food.expiryTime).toLocaleString() %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <form action="/receiver/claim/<%= food._id %>" method="POST" class="styled-form">
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" name="phone" id="phone" placeholder="Enter your phone number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryDetails">Delivery / Pickup Details</label>
+                    <textarea name="deliveryDetails" id="deliveryDetails" rows="3"
+                        placeholder="How will you receive this food? Provide pickup or delivery instructions."
+                        required></textarea>
+                </div>
+
+                <div class="info-box">
+                    <span class="info-icon">ℹ️</span>
+                    <p>After claiming, you will receive a <strong>6-digit OTP</strong>. Show this OTP to the donor
+                        during pickup to complete the handover.</p>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Claim Food & Get OTP</button>
+                    <a href="/receiver/available-food" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>

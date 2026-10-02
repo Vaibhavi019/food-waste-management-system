@@ -1,0 +1,164 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <span class="eyebrow">AI DATA CAPTURE</span>
+            <h1>Register Production & Surplus</h1>
+            <p>Capture the minimum operational data needed for demand, waste-risk and quality intelligence.</p>
+        </div>
+    </div>
+
+    <div class="form-container form-container-wide">
+        <form action="/donor/add-food" method="POST" class="styled-form" enctype="multipart/form-data">
+            <div class="form-section-title">1. Food & production</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="itemName">Food Item</label>
+                    <input type="text" name="itemName" id="itemName" placeholder="e.g., Vegetable Biryani" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select name="category" id="category">
+                        <option>Prepared Food</option>
+                        <option>Bakery</option>
+                        <option>Fruits & Vegetables</option>
+                        <option>Dairy</option>
+                        <option>Packaged Food</option>
+                        <option>Raw Material</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="foodType">Food Type</label>
+                    <select name="foodType" id="foodType">
+                        <option>Vegetarian</option>
+                        <option>Non-Vegetarian</option>
+                        <option>Vegan</option>
+                        <option>Mixed</option>
+                        <option>Unknown</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="unit">Unit</label>
+                    <select name="unit" id="unit">
+                        <option>portions</option>
+                        <option>kg</option>
+                        <option>packets</option>
+                        <option>litres</option>
+                        <option>units</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row three-col">
+                <div class="form-group">
+                    <label for="producedQuantity">Produced</label>
+                    <input type="number" min="0" step="1" name="producedQuantity" id="producedQuantity" placeholder="1500" required>
+                </div>
+                <div class="form-group">
+                    <label for="consumedQuantity">Consumed / Used</label>
+                    <input type="number" min="0" step="1" name="consumedQuantity" id="consumedQuantity" placeholder="1380" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Surplus Listing</label>
+                    <input type="text" name="quantity" id="quantity" placeholder="120 portions" required>
+                </div>
+            </div>
+
+            <div class="smart-calculator">
+                <div>
+                    <span>AI surplus calculation</span>
+                    <strong id="surplusPreview">Enter production and consumption</strong>
+                </div>
+                <small>Surplus = produced − consumed</small>
+            </div>
+
+            <div class="form-section-title">2. AI-Assisted Quality Risk Assessment</div>
+            
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label for="foodImage">Food Image (Prototype Visual Assessment)</label>
+                <div style="border: 2px dashed var(--border-light); padding: 2rem; text-align: center; border-radius: var(--radius-md); background: var(--surface-light); margin-top: 0.5rem;">
+                    <input type="file" name="foodImage" id="foodImage" accept="image/jpeg,image/png,image/webp" style="display: block; margin: 0 auto 1rem auto; max-width: 100%;">
+                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.5rem;">Upload an image for AI-assisted visual screening.</p>
+                </div>
+            </div>
+
+            <div class="form-section-title">3. Quality & storage telemetry</div>
+
+            <div class="form-row three-col">
+                <div class="form-group">
+                    <label for="storageTempC">Storage temperature (°C)</label>
+                    <input type="number" step="0.1" name="storageTempC" id="storageTempC" placeholder="5.5">
+                </div>
+                <div class="form-group">
+                    <label for="humidityPct">Humidity (%)</label>
+                    <input type="number" min="0" max="100" step="1" name="humidityPct" id="humidityPct" placeholder="65">
+                </div>
+                <div class="form-group">
+                    <label for="pickupWindowMinutes">Pickup window (minutes)</label>
+                    <input type="number" min="15" step="15" name="pickupWindowMinutes" id="pickupWindowMinutes" value="120">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="expiryTime">Safe Until / Expiry</label>
+                <input type="datetime-local" name="expiryTime" id="expiryTime" required>
+            </div>
+
+            <div class="form-section-title">4. Redistribution coordinates</div>
+
+            <div class="form-group">
+                <label for="pickupLocation">Pickup Location</label>
+                <textarea name="pickupLocation" id="pickupLocation" rows="2" placeholder="Institution kitchen / cafeteria address" required></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="latitude">Latitude <span class="text-muted">(optional)</span></label>
+                    <input type="number" step="any" name="latitude" id="latitude" placeholder="17.3850">
+                </div>
+                <div class="form-group">
+                    <label for="longitude">Longitude <span class="text-muted">(optional)</span></label>
+                    <input type="number" step="any" name="longitude" id="longitude" placeholder="78.4867">
+                </div>
+            </div>
+
+            <div class="info-box">
+                <span class="info-icon">🧠</span>
+                <p>The prototype calculates an AI-assisted quality score from <strong>time remaining + storage telemetry + visual anomalies</strong>. It is a prototype screening signal, not a trained food-safety certification. <strong>Human verification required before redistribution.</strong></p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">🧠 Run Intelligence & Register</button>
+                <a href="/donor/dashboard" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+(function () {
+    const produced = document.getElementById('producedQuantity');
+    const consumed = document.getElementById('consumedQuantity');
+    const surplusPreview = document.getElementById('surplusPreview');
+    const quantity = document.getElementById('quantity');
+
+    function updateSurplus() {
+        const p = Number(produced.value || 0);
+        const c = Number(consumed.value || 0);
+        const s = Math.max(0, p - c);
+        surplusPreview.textContent = (p && consumed.value !== '') ? `${s.toLocaleString()} surplus ${s === 1 ? 'unit' : 'units'}` : 'Enter production and consumption';
+        if (p && consumed.value !== '' && !quantity.dataset.manual) quantity.value = `${s} portions`;
+    }
+
+    quantity.addEventListener('input', () => quantity.dataset.manual = 'true');
+    produced.addEventListener('input', updateSurplus);
+    consumed.addEventListener('input', updateSurplus);
+})();
+</script>
+
+<%- include('../partials/footer') %>

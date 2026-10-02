@@ -1,0 +1,57 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <span class="eyebrow">SMART REDISTRIBUTION NETWORK</span>
+            <h1>Available Surplus</h1>
+            <p>Food is ranked by urgency, quality signal and operational match score.</p>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <span class="info-icon">🎯</span>
+        <p><strong>AI match score</strong> is a prototype prioritization signal. It helps recipients focus on food that needs action sooner; it does not replace operator verification.</p>
+    </div>
+
+    <% if (foods.length === 0) { %>
+        <div class="empty-state">
+            <h3>No food available right now</h3>
+            <p>Check back soon — institutional kitchens can publish new surplus in real time.</p>
+        </div>
+    <% } else { %>
+        <div class="cards-grid">
+            <% foods.forEach(food => { %>
+            <div class="card <%= food.urgency === 'Critical' ? 'card-critical' : '' %>">
+                <div class="card-header">
+                    <div>
+                        <h3><%= food.itemName %></h3>
+                        <small><%= food.category || 'Prepared Food' %> • <%= food.foodType || 'Unknown' %></small>
+                    </div>
+                    <span class="match-score"><%= food.matchScore %>% Match</span>
+                </div>
+                <div class="card-body">
+                    <div class="food-detail"><span class="detail-label">📦 Surplus:</span> <%= food.quantity %></div>
+                    <div class="food-detail"><span class="detail-label">🧠 Quality:</span> <%= food.qualityScore || '—' %>/100 (<%= food.qualityStatus || 'Unknown' %>)</div>
+                    <div class="food-detail"><span class="detail-label">⏱ Time left:</span> <%= food.hoursLeft %> hours</div>
+                    <div class="food-detail"><span class="detail-label">🚚 Route estimate:</span> <%= food.routeEstimate && food.routeEstimate.available ? food.routeEstimate.routeLabel : 'Coordinates needed' %></div>
+                    <div class="food-detail"><span class="detail-label">📍 Pickup:</span> <%= food.pickupLocation %></div>
+                    <div class="food-detail"><span class="detail-label">🏢 Source:</span> <%= food.donor.organization || food.donor.name %> <% if (food.donor.isVerified) { %><span class="verified-badge" title="Verified organization">✓</span><% } %></div>
+                    <div class="food-detail"><span class="detail-label">🚦 Priority:</span>
+                        <span class="badge badge-<%= food.urgency === 'Critical' ? 'danger' : food.urgency === 'High' ? 'warning' : food.urgency === 'Medium' ? 'info' : 'success' %>"><%= food.urgency %></span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="/receiver/claim/<%= food._id %>" class="btn btn-primary btn-block">Claim & Schedule Pickup</a>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    <% } %>
+
+    <div class="form-actions" style="margin-top:1.5rem;">
+        <a href="/receiver/dashboard" class="btn btn-secondary">← Back to Hub</a>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

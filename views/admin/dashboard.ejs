@@ -1,0 +1,144 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>SANCHARI System Command Center</h1>
+        <p>Global oversight of the redistribution ecosystem, sustainability impact, and logistics.</p>
+    </div>
+
+    <!-- Primary Stats -->
+    <div class="stats-grid stats-grid-4">
+        <div class="stat-card">
+            <div class="stat-value"><%= stats.totalDonors %></div>
+            <div class="stat-label">Total institutions</div>
+        </div>
+        <div class="stat-card stat-info">
+            <div class="stat-value"><%= stats.totalReceivers %></div>
+            <div class="stat-label">Total recipients</div>
+        </div>
+        <div class="stat-card stat-success">
+            <div class="stat-value"><%= stats.totalListings %></div>
+            <div class="stat-label">Food listed</div>
+        </div>
+        <div class="stat-card stat-success">
+            <div class="stat-value"><%= stats.completedDonations %></div>
+            <div class="stat-label">Food redistributed</div>
+        </div>
+        <div class="stat-card stat-warning">
+            <div class="stat-value"><%= stats.activeListings %></div>
+            <div class="stat-label">Active surplus</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value"><%= stats.totalClaims - stats.completedDonations %></div>
+            <div class="stat-label">Active claims</div>
+        </div>
+        <div class="stat-card stat-success">
+            <div class="stat-value"><%= stats.completedDonations %></div>
+            <div class="stat-label">Completed handovers</div>
+        </div>
+        <div class="stat-card stat-info">
+            <div class="stat-value text-muted">Awaiting Data</div>
+            <div class="stat-label">Food waste prevented</div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid-2">
+        <!-- Sections Awaiting Data -->
+        <section class="panel">
+            <div class="panel-header">
+                <h2>System Activity</h2>
+                <span class="badge badge-info">Awaiting Data</span>
+            </div>
+            <p class="text-muted" style="font-size:0.9rem;">Aggregated logs of user logins, listing creations, and matches.</p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Redistribution Pipeline</h2>
+                <span class="badge badge-info">Awaiting Data</span>
+            </div>
+            <p class="text-muted" style="font-size:0.9rem;">Live tracking of food from institutional kitchens to recipient drop-offs.</p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Food Categories</h2>
+                <span class="badge badge-info">Awaiting Data</span>
+            </div>
+            <p class="text-muted" style="font-size:0.9rem;">Breakdown of surplus by vegetarian, non-vegetarian, perishable, and non-perishable categories.</p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Institution Activity</h2>
+                <span class="badge badge-info">Awaiting Data</span>
+            </div>
+            <p class="text-muted" style="font-size:0.9rem;">Top donating institutions and their compliance scores.</p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Recipient Activity</h2>
+                <span class="badge badge-info">Awaiting Data</span>
+            </div>
+            <p class="text-muted" style="font-size:0.9rem;">NGO engagement metrics and pickup reliability ratings.</p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Sustainability Analytics (Phase 10)</h2>
+                <span class="badge badge-success">Active</span>
+            </div>
+            <% if (impact.foodDivertedKg > 0) { %>
+                <p class="text-muted" style="font-size:0.9rem;">Total Food Diverted: <strong><%= impact.foodDivertedKg.toLocaleString() %> kg</strong></p>
+                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                    <div>• Redistributed: <%= impact.redistributedKg.toLocaleString() %> kg</div>
+                    <div>• Processed/Upcycled: <%= impact.processedKg.toLocaleString() %> kg</div>
+                    <div>• Organic Recovery: <%= impact.organicRecoveryKg.toLocaleString() %> kg</div>
+                </div>
+                <div style="margin-top: 0.75rem; border-top: 1px solid var(--border-light); padding-top: 0.75rem;">
+                    <p class="text-muted" style="font-size:0.85rem; font-weight: 600;">Estimated Impact</p>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                        <div>• CO₂e Avoided: <%= impact.estimatedImpact.co2eAvoidedKg !== null ? impact.estimatedImpact.co2eAvoidedKg.toLocaleString() + ' kg' : 'Unavailable' %></div>
+                        <div>• Water Footprint: <%= impact.estimatedImpact.waterAvoidedLiters !== null ? impact.estimatedImpact.waterAvoidedLiters.toLocaleString() + ' L' : 'Unavailable' %></div>
+                    </div>
+                </div>
+            <% } else { %>
+                <p class="text-muted" style="font-size:0.9rem;">No historical sustainability records available yet.</p>
+            <% } %>
+            <p class="text-muted" style="font-size:0.75rem; margin-top: 0.5rem;">Data derived from <%= impact.dataCoverage.completedHandoverRecords + impact.dataCoverage.confirmedUtilizationRecords %> completed actions.</p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Traceability Overview (Phase 8)</h2>
+                <span class="badge badge-success">Active</span>
+            </div>
+            <p class="text-muted" style="font-size:0.9rem;">Total lifecycle events recorded: <strong><%= stats.totalTraceabilityEvents || 0 %></strong></p>
+            <p class="text-muted" style="font-size:0.9rem;">Completed verified handovers: <strong><%= stats.completedHandovers || 0 %></strong></p>
+            <p class="text-muted" style="font-size:0.8rem; margin-top: 0.5rem; color: var(--success);">✓ SHA-256 integrity checks enabled</p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Utilization Pathways (Phase 9)</h2>
+                <span class="badge badge-info">Active</span>
+            </div>
+            <% if (stats.processingRecsCount > 0) { %>
+                <p class="text-muted" style="font-size:0.9rem;">Total recommendations: <strong><%= stats.processingRecsCount %></strong></p>
+            <% } else { %>
+                <p class="text-muted" style="font-size:0.9rem;">Live decision-support recommendations</p>
+            <% } %>
+            <p class="text-muted" style="font-size:0.8rem; margin-top: 0.5rem;">*Rule-based processing intelligence prototype.</p>
+        </section>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions" style="margin-top: 2rem;">
+        <a href="/admin/users" class="btn btn-primary">👥 Manage Network</a>
+        <a href="/admin/listings" class="btn btn-secondary">📋 Manage Listings</a>
+        <a href="/admin/users?role=receiver" class="btn btn-info">✅ Verify NGOs</a>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="SANCHARI — AI-powered food waste reduction and sustainable redistribution ecosystem.">
+  <title>SANCHARI • Smart Food. Smarter Redistribution.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <script>
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">
+        <span class="brand-icon">🍽️</span>
+        <span class="brand-text">SANCHARI</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/" class="nav-link">Home</a></li>
+        <% if (locals.currentUser && currentUser.role === 'donor') { %>
+          <li><a href="/donor/intelligence" class="nav-link">🧠 Intelligence</a></li>
+          <li><a href="/donor/add-food" class="nav-link">＋ Production</a></li>
+        <% } %>
+        <% if (locals.currentUser && currentUser.role === 'receiver') { %>
+          <li><a href="/receiver/available-food" class="nav-link">🎯 Matches</a></li>
+        <% } %>
+        <li><a href="/register" class="nav-link btn-nav">Register</a></li>
+        <li>
+          <button id="themeToggle" class="theme-toggle" aria-label="Toggle Dark Mode">
+            <span class="theme-icon-light">🌙</span>
+            <span class="theme-icon-dark" style="display:none;">☀️</span>
+          </button>
+        </li>
+        <% if (locals.currentUser) { %>
+          <li class="nav-user">
+            <span class="user-badge">
+              <%= currentUser.name %>
+            </span>
+            <a href="/logout" class="nav-link logout-link">Logout</a>
+          </li>
+          <% } %>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <% if (locals.success) { %>
+      <div class="alert alert-success" id="alertMsg">
+        <span class="alert-icon">✅</span>
+        <span>
+          <%= success %>
+        </span>
+        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+      </div>
+      <% } %>
+        <% if (locals.error) { %>
+          <div class="alert alert-error" id="alertMsg">
+            <span class="alert-icon">❌</span>
+            <span>
+              <%= error %>
+            </span>
+            <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+          </div>
+          <% } %>

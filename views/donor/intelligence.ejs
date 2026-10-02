@@ -1,0 +1,385 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <span class="eyebrow">PS 26234 • AI OPERATIONS</span>
+            <h1>Food Intelligence Center</h1>
+            <p>Predict demand, detect surplus risk, screen food quality, and prioritize redistribution.</p>
+        </div>
+        <div class="header-actions">
+            <a href="/donor/add-food" class="btn btn-primary">＋ Register Production</a>
+            <a href="/donor/dashboard" class="btn btn-secondary">← Dashboard</a>
+        </div>
+    </div>
+
+    <div class="ai-banner">
+        <div>
+            <span class="ai-pulse">● LIVE INTELLIGENCE</span>
+            <h2>Predict → Detect → Redistribute → Measure</h2>
+            <p>Generated <%= generatedAt.toLocaleString() %>. AI-assisted prototype assessment using historical patterns and visual indicators. <strong>Human verification required before redistribution.</strong></p>
+        </div>
+        <div class="ai-banner-score">
+            <span>Forecast confidence</span>
+            <strong><%= aiData.forecast.confidenceScore %>%</strong>
+        </div>
+    </div>
+
+    <div class="dashboard-grid-2">
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <span class="panel-kicker">DEMAND AI</span>
+                    <h2>Production Recommendation</h2>
+                </div>
+                <span class="smart-badge">MODEL • Adaptive Heuristic</span>
+            </div>
+            <div class="forecast-layout" style="grid-template-columns: 1fr;">
+                <div class="forecast-copy">
+                    <div class="metric-line">
+                        <span>Predicted demand:</span>
+                        <strong><%= aiData.forecast.predictedDemand.toLocaleString() %> portions</strong>
+                    </div>
+                    <div class="metric-line">
+                        <span>Forecast confidence:</span>
+                        <strong><%= aiData.forecast.confidenceScore %>% (<%= aiData.forecast.confidenceLevel %>)</strong>
+                    </div>
+                    
+                    <h3 style="margin-top: 1.5rem; font-size: 0.95rem; color: var(--primary-dark);">SURPLUS & STORAGE RISK</h3>
+                    <div class="metric-line <%= aiData.surplus.riskLevel === 'HIGH' ? 'warning' : '' %>">
+                        <span>Surplus risk level:</span>
+                        <strong><%= aiData.surplus.riskLevel %></strong>
+                    </div>
+                    <div class="metric-line">
+                        <span>Predicted surplus:</span>
+                        <strong><%= aiData.surplus.predictedSurplus.toLocaleString() %> portions</strong>
+                    </div>
+                    <div class="metric-line" id="intelStorageRiskLine">
+                        <span>IoT Storage Risk:</span>
+                        <strong id="intelStorageRisk">Awaiting Telemetry...</strong>
+                    </div>
+
+                    <h3 style="margin-top: 1.5rem; font-size: 0.95rem; color: var(--primary-dark);">RECOMMENDATION</h3>
+                    <div class="metric-line">
+                        <span>Recommended production:</span>
+                        <strong><%= aiData.recommendation.recommendedProduction.toLocaleString() %> portions</strong>
+                    </div>
+                    <div class="info-box compact" style="margin-top: 0.5rem; border: 1px solid var(--border);">
+                        <span class="info-icon">💡</span>
+                        <p><strong>Action:</strong> <%= aiData.recommendation.action %></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <span class="panel-kicker">EXPLAINABILITY</span>
+                    <h2>Why this forecast?</h2>
+                </div>
+            </div>
+            <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1rem;"><%= aiData.explanation.summary %></p>
+            
+            <ul style="padding-left: 1.25rem; margin-bottom: 1.5rem; color: var(--text-secondary); line-height: 1.7; font-size: 0.9rem;">
+                <% aiData.explanation.factors.forEach(factor => { %>
+                    <li><%= factor %></li>
+                <% }) %>
+            </ul>
+
+            <div class="panel-header" style="margin-top: 2rem;">
+                <div>
+                    <span class="panel-kicker">SUSTAINABILITY AI</span>
+                    <h2>Impact Ledger</h2>
+                </div>
+                <span class="smart-badge">DEMO ESTIMATE</span>
+            </div>
+            <div class="impact-grid">
+                <div class="impact-item"><span>Food diverted</span><strong><%= impact.foodKg.toLocaleString() %> kg</strong></div>
+                <div class="impact-item"><span>CO₂e avoided*</span><strong><%= impact.co2Kg.toLocaleString() %> kg</strong></div>
+                <div class="impact-item"><span>Water footprint avoided*</span><strong><%= impact.waterLitres.toLocaleString() %> L</strong></div>
+                <div class="impact-item"><span>Estimated value*</span><strong>₹<%= impact.moneySaved.toLocaleString() %></strong></div>
+            </div>
+        </section>
+    </div>
+
+    <section class="panel section-block">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">QUALITY INTELLIGENCE (PHASE 5)</span>
+                <h2>AI-Assisted Quality Risk Assessment</h2>
+            </div>
+            <span class="smart-badge">PROTOTYPE FUSION</span>
+        </div>
+        <div style="background: var(--surface-light); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-light); margin-bottom: 2rem;">
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem;">
+                <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 500;">📸 Food Image</div>
+                    <div style="padding: 1rem; font-weight: 700; color: var(--text-light);">+</div>
+                    <div style="padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 500;">🌡️ Storage Telemetry</div>
+                    <div style="padding: 1rem; font-weight: 700; color: var(--text-light);">+</div>
+                    <div style="padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 500;">⏳ Time Remaining</div>
+                </div>
+                <div style="font-weight: 700; color: var(--primary);">↓</div>
+                <div style="padding: 1rem 2rem; background: var(--primary); color: white; border-radius: var(--radius-md); font-weight: 700; letter-spacing: 0.5px;">AI-ASSISTED QUALITY RISK ASSESSMENT</div>
+                <div style="font-weight: 700; color: var(--primary);">↓</div>
+                <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 500;">Risk Level</div>
+                    <div style="padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 500;">Recommended Action</div>
+                    <div style="padding: 1rem; background: var(--surface); border: 1px solid var(--warning-dark); color: var(--warning-dark); border-radius: var(--radius-sm); font-weight: 700;">Human Verification Required</div>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">*Prototype visual analysis — not a trained food-spoilage classifier. Does not guarantee food safety.</p>
+        </div>
+    </section>
+
+    <section class="panel section-block">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">WASTE INTELLIGENCE</span>
+                <h2>Surplus & Quality Risk Monitor</h2>
+            </div>
+            <span class="smart-badge">PRIORITIZED</span>
+        </div>
+
+        <% if (listings.length === 0) { %>
+            <div class="empty-state">
+                <h3>No production records yet</h3>
+                <p>Register your first kitchen production record to activate the intelligence layer.</p>
+            </div>
+        <% } else { %>
+            <div class="table-responsive">
+                <table class="data-table intelligence-table">
+                    <thead>
+                        <tr>
+                            <th>Food</th>
+                            <th>Surplus</th>
+                            <th>Quality Score</th>
+                            <th>Waste Risk</th>
+                            <th>Fusion Risk</th>
+                            <th>Urgency</th>
+                            <th>Decision</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% listings.forEach(item => { %>
+                            <tr>
+                                <td>
+                                    <strong><%= item.itemName %></strong>
+                                    <small><%= item.category %> • <%= item.foodType %></small>
+                                </td>
+                                <td><strong><%= item.surplusQuantity || item.quantity %></strong> <%= item.unit %></td>
+                                <td>
+                                    <span class="score-chip <%= item.assessment.score >= 80 ? 'score-good' : item.assessment.score >= 60 ? 'score-watch' : 'score-risk' %>">
+                                        <%= item.assessment.score %>/100
+                                    </span>
+                                    <small><%= item.assessment.status %></small>
+                                </td>
+                                <td>
+                                    <div class="risk-bar"><span style="width:<%= item.wasteRisk %>%"></span></div>
+                                    <small><%= item.wasteRisk %>% (Waste)</small>
+                                </td>
+                                <td>
+                                    <% if (item.overallRiskLevel === 'HIGH') { %>
+                                        <span class="badge badge-danger">HIGH RISK</span>
+                                    <% } else if (item.overallRiskLevel === 'MEDIUM') { %>
+                                        <span class="badge badge-warning">MEDIUM</span>
+                                    <% } else if (item.overallRiskLevel === 'LOW') { %>
+                                        <span class="badge badge-success">LOW</span>
+                                    <% } else { %>
+                                        <span class="badge badge-info">Unassessed</span>
+                                    <% } %>
+                                </td>
+                                <td><span class="badge badge-<%= item.urgency === 'Critical' ? 'danger' : item.urgency === 'High' ? 'warning' : item.urgency === 'Medium' ? 'info' : 'success' %>"><%= item.urgency %></span></td>
+                                <td>
+                                    <% if (item.status === 'completed') { %>
+                                        <span class="badge badge-success">Redistributed</span>
+                                    <% } else if (item.status === 'claimed') { %>
+                                        <span class="badge badge-info">In transit / pickup</span>
+                                    <% } else if (item.urgency === 'Critical' || item.wasteRisk >= 70) { %>
+                                        <span class="badge badge-danger">Act now</span>
+                                    <% } else { %>
+                                        <span class="badge badge-warning">Match to NGO</span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </section>
+
+    <section class="panel section-block">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">RECIPIENT MATCHING INTELLIGENCE (PHASE 6)</span>
+                <h2>AI-Assisted Explainable Matching Prototype</h2>
+            </div>
+            <span class="smart-badge">RULE-BASED</span>
+        </div>
+        <div style="background: var(--surface-light); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-light); margin-bottom: 2rem;">
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.75rem;">
+                <div style="padding: 0.75rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 700;">SURPLUS FOOD</div>
+                <div style="font-weight: 700; color: var(--primary);">↓</div>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Food Type</div>
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Quantity</div>
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Location</div>
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Capacity</div>
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Availability</div>
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Time + Quality</div>
+                </div>
+                <div style="font-weight: 700; color: var(--primary);">↓</div>
+                <div style="padding: 1rem 2rem; background: var(--primary); color: white; border-radius: var(--radius-md); font-weight: 700; letter-spacing: 0.5px;">EXPLAINABLE MATCH SCORE</div>
+                <div style="font-weight: 700; color: var(--primary);">↓</div>
+                <div style="padding: 0.75rem 2rem; background: var(--surface); border: 1px solid var(--success); color: var(--success); border-radius: var(--radius-sm); font-weight: 700;">SUITABLE RECIPIENTS</div>
+            </div>
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">*AI-assisted explainable matching prototype. Not a trained ML model.</p>
+        </div>
+    </section>
+
+    <section class="panel section-block">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">SMART LOGISTICS INTELLIGENCE (PHASE 7)</span>
+                <h2>Route-Aware Redistribution Planning</h2>
+            </div>
+            <span class="smart-badge">PROTOTYPE ETA</span>
+        </div>
+        <div style="background: var(--surface-light); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-light); margin-bottom: 2rem;">
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.75rem;">
+                <div style="padding: 0.75rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 700;">MATCHED RECIPIENT</div>
+                <div style="font-weight: 700; color: var(--primary);">↓</div>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Location</div>
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Distance</div>
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Estimated Travel</div>
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Pickup Window</div>
+                    <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.85rem;">Remaining Time</div>
+                </div>
+                <div style="font-weight: 700; color: var(--primary);">↓</div>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="padding: 1rem 2rem; background: var(--primary); color: white; border-radius: var(--radius-md); font-weight: 700; letter-spacing: 0.5px;">ETA</div>
+                    <div style="padding: 1rem 2rem; background: var(--primary); color: white; border-radius: var(--radius-md); font-weight: 700; letter-spacing: 0.5px;">FEASIBILITY</div>
+                </div>
+                <div style="font-weight: 700; color: var(--primary);">↓</div>
+                <div style="padding: 0.75rem 2rem; background: var(--surface); border: 1px solid var(--warning-dark); color: var(--warning-dark); border-radius: var(--radius-sm); font-weight: 700;">LOGISTICS PRIORITY</div>
+            </div>
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">*Prototype ETA — does not use live traffic or real-time GPS vehicle tracking.</p>
+        </div>
+    </section>
+    <section class="panel section-block">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">FOOD PROCESSING & UPCYCLING INTELLIGENCE (PHASE 9)</span>
+                <h2>Utilization Pathway Decision Support</h2>
+            </div>
+            <span class="smart-badge">EXPLAINABLE RULES</span>
+        </div>
+        <div style="background: var(--surface-light); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-light); margin-bottom: 2rem;">
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; font-size: 0.85rem;">
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">SURPLUS FOOD</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="padding: 0.25rem 0.5rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">CATEGORY</div>
+                    <div style="padding: 0.25rem 0.5rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">QUANTITY</div>
+                    <div style="padding: 0.25rem 0.5rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">QUALITY RISK</div>
+                    <div style="padding: 0.25rem 0.5rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">STORAGE CONDITIONS</div>
+                    <div style="padding: 0.25rem 0.5rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">REMAINING TIME</div>
+                    <div style="padding: 0.25rem 0.5rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">RECIPIENT MATCH</div>
+                    <div style="padding: 0.25rem 0.5rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">LOGISTICS FEASIBILITY</div>
+                </div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">UTILIZATION PATHWAY</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 0.5rem;">
+                    <div style="padding: 0.75rem 1.5rem; background: var(--success); color: white; border-radius: var(--radius-md); font-weight: 700;">REDISTRIBUTE</div>
+                    <div style="padding: 0.75rem 1.5rem; background: var(--info); color: white; border-radius: var(--radius-md); font-weight: 700;">PROCESS / UPCYCLE</div>
+                    <div style="padding: 0.75rem 1.5rem; background: var(--warning-dark); color: white; border-radius: var(--radius-md); font-weight: 700;">ORGANIC RECOVERY</div>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+                *Explainable utilization decision-support prototype. Does not automatically certify food safety.
+            </p>
+        </div>
+    </section>
+
+    <section class="panel section-block">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">DIGITAL TRACEABILITY (PHASE 8)</span>
+                <h2>Tamper-Evident Prototype Event Chain</h2>
+            </div>
+            <span class="smart-badge">SHA-256 HASH-LINKED</span>
+        </div>
+        <div style="background: var(--surface-light); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-light); margin-bottom: 2rem;">
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; font-size: 0.85rem;">
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">SURPLUS CREATED</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">QUALITY ASSESSED</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">MATCHED</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">CLAIMED</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">LOGISTICS</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">PICKUP</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">OTP VERIFIED</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.75rem 2rem; background: var(--success); color: white; border-radius: var(--radius-md); font-weight: 700; letter-spacing: 0.5px;">HANDOVER</div>
+            </div>
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+                *Hash-linked digital audit trail. Prototype integrity mechanism — not blockchain.
+            </p>
+        </div>
+    </section>
+    <section class="panel section-block">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">SUSTAINABILITY ANALYTICS (PHASE 10)</span>
+                <h2>Impact Calculation Methodology</h2>
+            </div>
+            <span class="smart-badge">DATA-DRIVEN ESTIMATES</span>
+        </div>
+        <div style="background: var(--surface-light); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-light); margin-bottom: 2rem;">
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; font-size: 0.85rem;">
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">ACTUAL FOOD RECORDS</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">CONFIRMED UTILIZATION</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600;">FOOD DIVERSION</div>
+                <div style="color: var(--primary);">↓</div>
+                <div style="padding: 0.75rem 2rem; background: var(--info); color: white; border-radius: var(--radius-md); font-weight: 700;">IMPACT INDICATORS</div>
+            </div>
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+                *Environmental impact values are estimates derived from configured assumptions and should not be interpreted as measured site-specific impacts.
+            </p>
+        </div>
+    </section>
+
+    <section class="panel section-block">
+        <div class="panel-header">
+            <div>
+                <span class="panel-kicker">END-TO-END FLOW</span>
+                <h2>How SANCHARI closes the loop</h2>
+            </div>
+        </div>
+        <div class="flow-grid">
+            <div class="flow-node"><span>01</span><strong>Forecast</strong><small>Predict demand</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node"><span>02</span><strong>Detect</strong><small>Identify surplus</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node"><span>03</span><strong>Screen</strong><small>Quality + urgency</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node"><span>04</span><strong>Match</strong><small>Verified recipients</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node"><span>05</span><strong>Measure</strong><small>Waste + ESG impact</small></div>
+        </div>
+    </section>
+</div>
+
+<%- include('../partials/footer') %>
+<script src="/js/iot-client.js"></script>

@@ -1,0 +1,71 @@
+<%- include('../partials/header') %>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>My Claims</h1>
+            <p>Track all your food claims and OTP codes</p>
+        </div>
+
+        <% if (claims.length===0) { %>
+            <div class="empty-state">
+                <h3>No claims yet</h3>
+                <p>Browse <a href="/receiver/available-food">available food</a> to make your first claim.</p>
+            </div>
+            <% } else { %>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Food Item</th>
+                                <th>Location</th>
+                                <th>Phone</th>
+                                <th>OTP</th>
+                                <th>Status</th>
+                                <th>Claimed On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% claims.forEach(claim=> { %>
+                                <tr>
+                                    <td><strong>
+                                            <%= claim.food ? claim.food.itemName : 'Removed' %>
+                                        </strong></td>
+                                    <td>
+                                        <%= claim.food ? claim.food.pickupLocation : 'N/A' %>
+                                    </td>
+                                    <td>
+                                        <%= claim.phone %>
+                                    </td>
+                                    <td>
+                                        <% if (claim.status==='claimed' ) { %>
+                                            <span class="otp-display">
+                                                <%= claim.otp %>
+                                            </span>
+                                            <% } else if (claim.status==='completed' ) { %>
+                                                <span class="badge badge-success">✅ Verified</span>
+                                                <% } else { %>
+                                                    <span class="text-muted">—</span>
+                                                    <% } %>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="badge badge-<%= claim.status === 'claimed' ? 'warning' : claim.status === 'completed' ? 'success' : 'danger' %>">
+                                            <%= claim.status.charAt(0).toUpperCase() + claim.status.slice(1) %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <%= new Date(claim.createdAt).toLocaleString() %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } %>
+
+                    <div class="form-actions" style="margin-top: 1.5rem;">
+                        <a href="/receiver/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+                    </div>
+    </div>
+
+    <%- include('../partials/footer') %>

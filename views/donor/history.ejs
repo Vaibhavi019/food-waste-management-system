@@ -1,0 +1,63 @@
+<%- include('../partials/header') %>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>Donation History</h1>
+            <p>View all your food listings and their current status</p>
+        </div>
+
+        <% if (listings.length===0) { %>
+            <div class="empty-state">
+                <h3>No donations yet</h3>
+                <p>Start by <a href="/donor/add-food">adding a food listing</a>.</p>
+            </div>
+            <% } else { %>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Pickup Location</th>
+                                <th>Listed On</th>
+                                <th>Expiry Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% listings.forEach(item=> { %>
+                                <tr>
+                                    <td><strong>
+                                            <%= item.itemName %>
+                                        </strong></td>
+                                    <td>
+                                        <%= item.quantity %>
+                                    </td>
+                                    <td>
+                                        <%= item.pickupLocation %>
+                                    </td>
+                                    <td>
+                                        <%= new Date(item.createdAt).toLocaleDateString() %>
+                                    </td>
+                                    <td>
+                                        <%= new Date(item.expiryTime).toLocaleString() %>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="badge badge-<%= item.status === 'available' ? 'success' : item.status === 'claimed' ? 'warning' : item.status === 'completed' ? 'info' : 'danger' %>">
+                                            <%= item.status.charAt(0).toUpperCase() + item.status.slice(1) %>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } %>
+
+                    <div class="form-actions" style="margin-top: 1.5rem;">
+                        <a href="/donor/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+                    </div>
+    </div>
+
+    <%- include('../partials/footer') %>
