@@ -1,71 +1,77 @@
 <%- include('../partials/header') %>
 
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <h1>My Claims</h1>
-            <p>Track all your food claims and OTP codes</p>
+<main class="main-content">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--text);">My Claims</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 0.25rem;">Track all your food claims and OTP codes</p>
+    </header>
+
+    <% if (claims.length === 0) { %>
+        <div class="card" style="padding: 3rem; text-align: center; border: 1px dashed var(--border);">
+            <h3 style="font-size: 1.25rem; color: var(--text); margin-bottom: 0.5rem;">No claims yet</h3>
+            <p style="color: var(--text-muted);">Browse <a href="/receiver/available-food" style="color: var(--primary); font-weight: 600; text-decoration: underline;">available food</a> to make your first claim.</p>
         </div>
+    <% } else { %>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="min-width: 200px;">Food Item</th>
+                        <th style="min-width: 250px;">Location</th>
+                        <th style="min-width: 140px;">Phone</th>
+                        <th style="min-width: 160px; text-align: center;">OTP</th>
+                        <th style="min-width: 120px;">Status</th>
+                        <th style="min-width: 160px;">Claimed On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% claims.forEach(claim => { %>
+                        <tr>
+                            <td>
+                                <strong style="color: var(--text); font-size: 1rem;"><%= claim.food ? claim.food.itemName : 'Removed' %></strong>
+                            </td>
+                            <td style="color: var(--text-secondary); line-height: 1.4;">
+                                <%= claim.food ? claim.food.pickupLocation : 'N/A' %>
+                            </td>
+                            <td style="color: var(--text-secondary); font-family: monospace; font-size: 0.95rem;">
+                                <%= claim.phone %>
+                            </td>
+                            <td style="text-align: center;">
+                                <% if (claim.status === 'claimed') { %>
+                                    <span class="otp-display"><%= claim.otp %></span>
+                                <% } else if (claim.status === 'completed') { %>
+                                    <span class="badge badge-success" style="padding: 0.4rem 0.8rem;"><span style="margin-right: 0.25rem;">✅</span> Verified</span>
+                                <% } else { %>
+                                    <span class="text-muted">—</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% 
+                                    let badgeClass = 'badge-warning';
+                                    if (claim.status === 'completed') badgeClass = 'badge-success';
+                                    if (claim.status === 'cancelled') badgeClass = 'badge-danger';
+                                %>
+                                <span class="badge <%= badgeClass %>" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
+                                    <%= claim.status.toUpperCase() %>
+                                </span>
+                            </td>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">
+                                <% 
+                                    let dt = new Date(claim.createdAt); 
+                                    let dateStr = isNaN(dt) ? 'Date unavailable' : dt.toLocaleString();
+                                %>
+                                <%= dateStr %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
 
-        <% if (claims.length===0) { %>
-            <div class="empty-state">
-                <h3>No claims yet</h3>
-                <p>Browse <a href="/receiver/available-food">available food</a> to make your first claim.</p>
-            </div>
-            <% } else { %>
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Food Item</th>
-                                <th>Location</th>
-                                <th>Phone</th>
-                                <th>OTP</th>
-                                <th>Status</th>
-                                <th>Claimed On</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% claims.forEach(claim=> { %>
-                                <tr>
-                                    <td><strong>
-                                            <%= claim.food ? claim.food.itemName : 'Removed' %>
-                                        </strong></td>
-                                    <td>
-                                        <%= claim.food ? claim.food.pickupLocation : 'N/A' %>
-                                    </td>
-                                    <td>
-                                        <%= claim.phone %>
-                                    </td>
-                                    <td>
-                                        <% if (claim.status==='claimed' ) { %>
-                                            <span class="otp-display">
-                                                <%= claim.otp %>
-                                            </span>
-                                            <% } else if (claim.status==='completed' ) { %>
-                                                <span class="badge badge-success">✅ Verified</span>
-                                                <% } else { %>
-                                                    <span class="text-muted">—</span>
-                                                    <% } %>
-                                    </td>
-                                    <td>
-                                        <span
-                                            class="badge badge-<%= claim.status === 'claimed' ? 'warning' : claim.status === 'completed' ? 'success' : 'danger' %>">
-                                            <%= claim.status.charAt(0).toUpperCase() + claim.status.slice(1) %>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <%= new Date(claim.createdAt).toLocaleString() %>
-                                    </td>
-                                </tr>
-                                <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-                <% } %>
-
-                    <div class="form-actions" style="margin-top: 1.5rem;">
-                        <a href="/receiver/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
-                    </div>
+    <div style="margin-top: 2rem;">
+        <a href="/receiver/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
     </div>
+</main>
 
-    <%- include('../partials/footer') %>
+<%- include('../partials/footer') %>

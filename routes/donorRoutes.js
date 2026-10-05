@@ -668,9 +668,8 @@ router.post('/verify-otp', isLoggedIn, isDonor, async (req, res) => {
             return res.redirect('/donor/dashboard');
         }
 
-        if (claim.otp !== otp) {
-            req.session.error = 'Invalid OTP. Please try again.';
-
+        if (String(claim.otp).trim() !== String(otp).trim()) {
+            req.session.error = 'Invalid OTP. Please check the 6-digit code and try again.';
             return res.redirect('/donor/dashboard');
         }
 

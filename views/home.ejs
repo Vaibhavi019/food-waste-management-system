@@ -4,18 +4,13 @@
     /* Premium Home overrides */
     .home-hero {
         position: relative;
-        padding: 8rem 2rem 6rem;
+        padding: 6rem 2rem 4rem;
         text-align: center;
-        overflow: hidden;
         border-bottom: 1px solid var(--border);
-    }
-    
-    .particles-bg {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background-image: radial-gradient(var(--border) 1px, transparent 1px);
-        background-size: 30px 30px;
-        z-index: -1;
+        min-height: 70vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .hero-title {
@@ -34,19 +29,8 @@
     }
 
     .stat-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        padding: 2rem;
-        border-radius: var(--radius-lg);
+        padding: 2rem 1rem;
         text-align: center;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
     .stat-value {
@@ -156,57 +140,125 @@
         }
         .hero-title { font-size: 3rem; }
     }
+    
+    .journey-grid {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+    }
+    
+    .journey-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        flex: 1;
+    }
+
+    .journey-divider {
+        color: var(--border);
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .journey-grid {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2rem;
+        }
+        .journey-divider {
+            transform: rotate(90deg);
+            margin-left: 0.5rem;
+        }
+    }
 </style>
 
-<div class="home-hero hero-gradient">
-    <div class="particles-bg animate-fade-in delay-200"></div>
-    <div class="animate-fade-up" style="margin-bottom: 2rem;">
-        <span style="background: rgba(43, 192, 131, 0.15); border: 1px solid rgba(43, 192, 131, 0.3); color: #2bc083; padding: 0.4rem 1rem; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem;">
-            <span class="animate-pulse-dot" style="display: inline-block; width: 8px; height: 8px; background: #2bc083; border-radius: 50%;"></span>
-            SANCHARI AI PLATFORM ONLINE
-        </span>
+<div class="home-hero">
+    <div class="animate-fade-up" style="margin-bottom: 1rem;">
+        <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">SURPLUS FOOD REDISTRIBUTION</span>
     </div>
     
-    <h1 class="hero-title animate-fade-up">
-        <span style="color: var(--text);">Smart Food.</span><br/>
-        <span class="text-gradient">Smarter Redistribution.</span>
+    <h1 class="hero-title animate-fade-up" style="font-size: 4rem; max-width: 800px; margin: 0 auto 1.5rem; color: var(--text);">
+        Make surplus food count.
     </h1>
-    <p class="hero-subtitle animate-fade-up delay-100">
-        AI-Powered Food Intelligence for Institutional Kitchens.
-    </p>
-    <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem; color: var(--text-muted);" class="animate-fade-up delay-200">
-        Predict surplus. Protect food quality. Match faster. Redistribute smarter with immutable traceability.
+    
+    <p class="hero-subtitle animate-fade-up delay-100" style="color: var(--text-muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto 3rem; line-height: 1.6;">
+        Connect surplus food with nearby community needs through verified pickup, quality checks, and transparent redistribution.
     </p>
     
-    <div style="display: flex; gap: 1rem; justify-content: center;" class="animate-fade-up delay-300">
-        <a href="/login" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 99px;">Platform Login</a>
-        <a href="#how-it-works" class="btn btn-secondary glass-panel" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 99px; transition: background 0.3s;">Explore Platform</a>
+    <div style="display: flex; gap: 1rem; justify-content: center;" class="animate-fade-up delay-200">
+        <a href="/donor/add-food" class="btn btn-primary" style="padding: 0.85rem 2rem; font-size: 1.05rem; font-weight: 600; border-radius: 6px;">Donate Surplus</a>
+        <a href="/receiver/available-food" class="btn btn-secondary" style="padding: 0.85rem 2rem; font-size: 1.05rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--border); background: transparent;">Find Food</a>
+    </div>
+
+    <div class="animate-fade-up delay-300" style="margin-top: 5rem; max-width: 900px; margin-left: auto; margin-right: auto; text-align: left; border-top: 1px solid var(--border); padding-top: 3rem;">
+        <h3 style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-align: center; margin-bottom: 2.5rem; letter-spacing: 0.05em; text-transform: uppercase;">From surplus to someone's table.</h3>
+        
+        <div class="journey-grid">
+            <div class="journey-step">
+                <div style="background: rgba(11, 143, 85, 0.1); padding: 0.5rem; border-radius: 6px;">
+                    <svg width="24" height="24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                </div>
+                <div>
+                    <div style="font-weight: 600; color: var(--text); font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--primary); font-size: 0.8rem; font-weight: 700;">01</span> Surplus food</div>
+                    <div style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem; line-height: 1.4;">Food that would otherwise go unused.</div>
+                </div>
+            </div>
+            
+            <div class="journey-divider">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+            </div>
+            
+            <div class="journey-step">
+                <div style="background: rgba(11, 143, 85, 0.1); padding: 0.5rem; border-radius: 6px;">
+                    <svg width="24" height="24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <div>
+                    <div style="font-weight: 600; color: var(--text); font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--primary); font-size: 0.8rem; font-weight: 700;">02</span> Verified pickup</div>
+                    <div style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem; line-height: 1.4;">Safe, confirmed handover.</div>
+                </div>
+            </div>
+            
+            <div class="journey-divider">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+            </div>
+            
+            <div class="journey-step">
+                <div style="background: rgba(11, 143, 85, 0.1); padding: 0.5rem; border-radius: 6px;">
+                    <svg width="24" height="24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+                <div>
+                    <div style="font-weight: 600; color: var(--text); font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--primary); font-size: 0.8rem; font-weight: 700;">03</span> Community meal</div>
+                    <div style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem; line-height: 1.4;">Food reaches someone who needs it.</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <main class="main-content">
     <% if (locals.stats) { %>
-    <section class="animate-fade-up delay-400" style="margin-top: -4rem; position: relative; z-index: 10;">
-        <div class="grid-3">
+    <section class="animate-fade-up delay-400" style="margin-top: 2rem; margin-bottom: 4rem; position: relative; z-index: 10; border-bottom: 1px solid var(--border); padding-bottom: 3rem;">
+        <div class="grid-3" style="max-width: 1000px; margin: 0 auto;">
             <div class="stat-card">
                 <div class="stat-value"><%= stats.totalKg.toLocaleString() %> <span style="font-size: 1.5rem;">kg</span></div>
-                <div class="stat-label">Food Saved</div>
+                <div class="stat-label">Food redistributed</div>
+            </div>
+            <div class="stat-card" style="border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
+                <div class="stat-value"><%= stats.completed.toLocaleString() %></div>
+                <div class="stat-label">Successful handovers</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value"><%= stats.totalMeals.toLocaleString() %></div>
-                <div class="stat-label">Portions Redistributed</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value"><%= stats.completed.toLocaleString() %></div>
-                <div class="stat-label">Successful Handovers</div>
+                <div class="stat-label">Community connections</div>
             </div>
         </div>
     </section>
     <% } %>
 
-    <section id="how-it-works" style="margin-top: 8rem; text-align: center;">
-        <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">The Intelligent Supply Chain</h2>
-        <p class="text-muted" style="max-width: 600px; margin: 0 auto 2rem;">End-to-end management of institutional food surplus, powered by artificial intelligence and cryptographic traceability.</p>
+    <section id="how-it-works" style="margin-top: 4rem; text-align: center;">
+        <h2 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 1rem;">How SANCHARI works</h2>
+        <p class="text-muted" style="max-width: 600px; margin: 0 auto 4rem; font-size: 1.1rem;">Verified end-to-end management of institutional food surplus.</p>
         
         <div class="workflow-container animate-fade-up delay-100">
             <div class="workflow-line">
@@ -244,31 +296,31 @@
         <h2 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 4rem;">Platform Capabilities</h2>
         
         <div class="grid-2">
-            <div class="card card-body card-hover glass-panel" style="padding: 2.5rem; transition: transform 0.3s ease;">
+            <div class="card card-body card-hover" style="padding: 2.5rem; transition: transform 0.3s ease; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface);">
                 <div style="margin-bottom: 1.5rem; color: var(--info);">
                     <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
                 </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">AI Demand Forecasting</h3>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">Surplus Forecasting</h3>
                 <p class="text-muted" style="line-height: 1.6;">Prevent waste before it happens. SANCHARI analyzes historical consumption to recommend optimized production quantities for institutional kitchens.</p>
             </div>
             
-            <div class="card card-body card-hover glass-panel" style="padding: 2.5rem; transition: transform 0.3s ease;">
+            <div class="card card-body card-hover" style="padding: 2.5rem; transition: transform 0.3s ease; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface);">
                 <div style="margin-bottom: 1.5rem; color: var(--success);">
                     <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
                 </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">Computer Vision + IoT Quality</h3>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">Food Quality Telemetry</h3>
                 <p class="text-muted" style="line-height: 1.6;">Ensure food safety through real-time temperature and humidity telemetry combined with visual risk assessments of surplus food.</p>
             </div>
             
-            <div class="card card-body card-hover glass-panel" style="padding: 2.5rem; transition: transform 0.3s ease;">
+            <div class="card card-body card-hover" style="padding: 2.5rem; transition: transform 0.3s ease; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface);">
                 <div style="margin-bottom: 1.5rem; color: var(--warning);">
                     <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">Intelligent Matching</h3>
-                <p class="text-muted" style="line-height: 1.6;">Proprietary algorithms prioritize surplus distribution based on critical urgency, food quality signals, and operational fit for receivers.</p>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">Community Matching</h3>
+                <p class="text-muted" style="line-height: 1.6;">Our matching engine prioritizes surplus distribution based on critical urgency, food quality signals, and operational fit for receivers.</p>
             </div>
             
-            <div class="card card-body card-hover glass-panel" style="padding: 2.5rem; transition: transform 0.3s ease;">
+            <div class="card card-body card-hover" style="padding: 2.5rem; transition: transform 0.3s ease; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface);">
                 <div style="margin-bottom: 1.5rem; color: var(--primary);">
                     <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                 </div>

@@ -59,39 +59,39 @@
         <span class="brand-icon">S</span>
         <span class="brand-text">SANCHARI</span>
       </a>
-      
+
       <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
-      
+
       <ul class="nav-links" id="navLinks" style="flex: 1; justify-content: flex-end;">
         <li><a href="/" class="nav-link <%= locals.currentPath === '/' ? 'active' : '' %>">Home</a></li>
-        
+
         <% if (locals.currentUser && currentUser.role === 'donor') { %>
           <li><a href="/donor/dashboard" class="nav-link <%= locals.currentPath === '/donor/dashboard' ? 'active' : '' %>">Dashboard</a></li>
           <li><a href="/donor/intelligence" class="nav-link <%= locals.currentPath === '/donor/intelligence' ? 'active' : '' %>">Intelligence</a></li>
           <li><a href="/donor/add-food" class="nav-link <%= locals.currentPath === '/donor/add-food' ? 'active' : '' %>">Production</a></li>
         <% } %>
-        
+
         <% if (locals.currentUser && currentUser.role === 'receiver') { %>
           <li><a href="/receiver/dashboard" class="nav-link <%= locals.currentPath === '/receiver/dashboard' ? 'active' : '' %>">Dashboard</a></li>
           <li><a href="/receiver/available-food" class="nav-link <%= locals.currentPath === '/receiver/available-food' ? 'active' : '' %>">Matches</a></li>
         <% } %>
-        
+
         <% if (locals.currentUser && currentUser.role === 'admin') { %>
           <li><a href="/admin/dashboard" class="nav-link <%= locals.currentPath === '/admin/dashboard' ? 'active' : '' %>">Dashboard</a></li>
         <% } %>
-        
+
         <% if (!locals.currentUser) { %>
           <li><a href="/register" class="nav-link">Register</a></li>
           <li><a href="/login" class="nav-link">Login</a></li>
         <% } %>
-        
+
         <li style="margin-left: var(--space-md);">
           <button id="themeToggle" class="theme-toggle" aria-label="Toggle Dark Mode">
             <span class="theme-icon-light">🌙</span>
             <span class="theme-icon-dark" style="display:none;">☀️</span>
           </button>
         </li>
-        
+
         <% if (locals.currentUser) { %>
           <li class="nav-user" style="border-left: 1px solid var(--border);">
             <span class="user-badge" style="color: var(--text);" title="User Profile"><%= currentUser.name %></span>
@@ -104,13 +104,39 @@
 
   <main class="main-content">
     <% if (locals.success) { %>
-      <div class="alert alert-success" id="alertMsg">
-        <span class="alert-icon">✅</span>
-        <span style="flex: 1;"><%= success %></span>
-        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+      <div class="alert alert-success" id="alertMsg" style="align-items: center; padding: 1.5rem;">
+        <div style="flex: 1;">
+          <% if (typeof success === 'string' && success.includes('Your OTP is:')) { %>
+            <%
+              let parts = success.match(/(.*Your OTP is:)\s*(\d+)\.\s*(.*)/);
+              if (parts) {
+            %>
+              <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.1rem; color: var(--primary-dark);">
+                  <span class="alert-icon" style="font-size: 1.5rem;">✅</span> <%= parts[1] %>
+                </div>
+                <div style="background: var(--surface); color: var(--primary); font-family: monospace; font-size: 2.5rem; font-weight: 800; letter-spacing: 6px; padding: 0.5rem 1.5rem; border-radius: var(--radius-md); border: 2px dashed var(--primary); box-shadow: var(--shadow-sm); user-select: all; display: inline-block;">
+                  <%= parts[2] %>
+                </div>
+                <div style="font-size: 0.95rem; color: var(--primary-dark); opacity: 0.9; font-weight: 500;">
+                  <%= parts[3] %>
+                </div>
+              </div>
+            <% } else { %>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="alert-icon">✅</span> <span style="font-weight: 600;"><%= success %></span>
+              </div>
+            <% } %>
+          <% } else { %>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="alert-icon">✅</span> <span style="font-weight: 600;"><%= success %></span>
+            </div>
+          <% } %>
+        </div>
+        <button class="alert-close" onclick="this.parentElement.remove()" style="align-self: flex-start; margin-top: 0.25rem;">×</button>
       </div>
     <% } %>
-    
+
     <% if (locals.error) { %>
       <div class="alert alert-warning" id="alertMsg">
         <span class="alert-icon">⚠️</span>

@@ -1,62 +1,115 @@
 <%- include('../partials/header') %>
 
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <h1>Claim Food</h1>
-            <p>Provide your details to claim this food item</p>
-        </div>
+<main class="main-content">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--text);">Claim Food</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 0.25rem;">Confirm details to generate your secure pickup OTP</p>
+    </header>
 
-        <div class="claim-food-info">
-            <div class="card">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        
+        <!-- LEFT: Food Info & Form -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="card" style="border: 1px solid var(--border);">
                 <div class="card-header">
-                    <h3>
-                        <%= food.itemName %>
-                    </h3>
+                    <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text);"><%= food.itemName %></h3>
                     <span class="badge badge-success">Available</span>
                 </div>
-                <div class="card-body">
-                    <div class="food-detail"><span class="detail-label">📦 Quantity:</span>
-                        <%= food.quantity %>
+                <div class="card-body" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-light); padding-bottom: 0.5rem;">
+                        <span style="color: var(--text-muted); font-weight: 600;">📦 Quantity</span>
+                        <strong style="color: var(--text);"><%= food.quantity %></strong>
                     </div>
-                    <div class="food-detail"><span class="detail-label">📍 Location:</span>
-                        <%= food.pickupLocation %>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-light); padding-bottom: 0.5rem;">
+                        <span style="color: var(--text-muted); font-weight: 600;">📍 Location</span>
+                        <strong style="color: var(--text); text-align: right;"><%= food.pickupLocation %></strong>
                     </div>
-                    <div class="food-detail"><span class="detail-label">👤 Donor:</span>
-                        <%= food.donor.name %>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-light); padding-bottom: 0.5rem;">
+                        <span style="color: var(--text-muted); font-weight: 600;">👤 Donor</span>
+                        <strong style="color: var(--text);"><%= food.donor.name %></strong>
                     </div>
-                    <div class="food-detail"><span class="detail-label">⏰ Expires:</span>
-                        <%= new Date(food.expiryTime).toLocaleString() %>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted); font-weight: 600;">⏰ Expires</span>
+                        <strong style="color: var(--danger);"><%= new Date(food.expiryTime).toLocaleString() %></strong>
                     </div>
                 </div>
             </div>
+
+            <div class="card" style="padding: 1.5rem; background: var(--surface);">
+                <form action="/receiver/claim/<%= food._id %>" method="POST">
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="phone" style="font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; display: block;">Contact Phone Number</label>
+                        <input type="tel" name="phone" id="phone" placeholder="Enter your phone number" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-md); font-family: var(--font-family); background: var(--surface); color: var(--text);">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="deliveryDetails" style="font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; display: block;">Pickup Instructions (Required)</label>
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                            Please coordinate pickup with the donor at the listed location. Bring your OTP and show it to the donor at pickup.
+                        </div>
+                        <textarea name="deliveryDetails" id="deliveryDetails" rows="3"
+                            placeholder="Example: I will arrive in 45 minutes with a temperature-controlled vehicle."
+                            required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-md); font-family: var(--font-family); background: var(--surface); color: var(--text);"></textarea>
+                    </div>
+
+                    <div class="form-actions" style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1; padding: 1rem; font-size: 1rem;">Confirm Claim & Get OTP</button>
+                        <a href="/receiver/available-food" class="btn btn-secondary" style="padding: 1rem;">Cancel</a>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <div class="form-container">
-            <form action="/receiver/claim/<%= food._id %>" method="POST" class="styled-form">
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" name="phone" id="phone" placeholder="Enter your phone number" required>
-                </div>
+        <!-- RIGHT: Workflow instructions -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem;">How Pickup Works</h2>
+            
+            <div class="card" style="padding: 1.5rem; background: var(--surface-muted); border: 1px dashed var(--border-strong);">
+                <div style="display: flex; flex-direction: column; gap: 1.5rem; position: relative;">
+                    <!-- Line connecting steps -->
+                    <div style="position: absolute; left: 15px; top: 20px; bottom: 20px; width: 2px; background: var(--border-strong); z-index: 0;"></div>
 
-                <div class="form-group">
-                    <label for="deliveryDetails">Delivery / Pickup Details</label>
-                    <textarea name="deliveryDetails" id="deliveryDetails" rows="3"
-                        placeholder="How will you receive this food? Provide pickup or delivery instructions."
-                        required></textarea>
-                </div>
+                    <div style="display: flex; gap: 1rem; align-items: flex-start; position: relative; z-index: 1;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">1</div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--text);">Claim Food</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">Confirm your contact details and estimated pickup time.</div>
+                        </div>
+                    </div>
 
-                <div class="info-box">
-                    <span class="info-icon">ℹ️</span>
-                    <p>After claiming, you will receive a <strong>6-digit OTP</strong>. Show this OTP to the donor
-                        during pickup to complete the handover.</p>
-                </div>
+                    <div style="display: flex; gap: 1rem; align-items: flex-start; position: relative; z-index: 1;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">2</div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--text);">OTP Generated</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">You receive a secure 6-digit code for this claim.</div>
+                        </div>
+                    </div>
 
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Claim Food & Get OTP</button>
-                    <a href="/receiver/available-food" class="btn btn-secondary">Cancel</a>
+                    <div style="display: flex; gap: 1rem; align-items: flex-start; position: relative; z-index: 1;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--warning); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">3</div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--text);">Physical Pickup</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">Arrive at the donor's location (<b>Pickup Only</b> - delivery not supported).</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; align-items: flex-start; position: relative; z-index: 1;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--success); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">4</div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--text);">Donor Verifies OTP</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">Provide your OTP to the donor to complete the secure handover.</div>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
+
+            <div class="alert alert-info" style="margin-top: 1rem;">
+                <span class="alert-icon">ℹ️</span>
+                <span style="font-size: 0.85rem;"><strong>Note:</strong> SANCHARI is a pickup-only platform. Ensure you have the logistics to collect the food before claiming.</span>
+            </div>
         </div>
+
     </div>
+</main>
 
-    <%- include('../partials/footer') %>
+<%- include('../partials/footer') %>

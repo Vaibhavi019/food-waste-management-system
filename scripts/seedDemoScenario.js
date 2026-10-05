@@ -43,9 +43,21 @@ async function seed() {
             });
         }
 
-        // Remove old demo data
-        await FoodListing.deleteMany({ itemName: { $regex: /\[DEMO\]/ } });
-        
+        // Remove old demo data properly
+        const demoFoods = await FoodListing.find({ itemName: { $regex: /\[DEMO\]/ } });
+        const demoFoodIds = demoFoods.map(f => f._id);
+
+        await Claim.deleteMany({ food: { $in: demoFoodIds } });
+        await TraceabilityEvent.deleteMany({ foodListingId: { $in: demoFoodIds } });
+        await FoodListing.deleteMany({ _id: { $in: demoFoodIds } });
+
+        // Cleanup any already orphaned claims (from previous buggy runs)
+        const allClaims = await Claim.find().populate('food');
+        const orphanedClaimIds = allClaims.filter(c => !c.food).map(c => c._id);
+        if (orphanedClaimIds.length > 0) {
+            await Claim.deleteMany({ _id: { $in: orphanedClaimIds } });
+        }
+
         console.log('Creating demo food listings...');
 
         const now = Date.now();
@@ -123,36 +135,6 @@ async function seed() {
             overallRiskLevel: 'LOW'
         });
         await recordDemoTraceability(listing3._id, donor._id, 'donor', 'FOOD_CREATED', 'Food surplus recorded');
-
-        // DEMO LISTING 4 - Claimed but pending OTP
-        const listing4 = await FoodListing.create({
-            donor: donor._id,
-            itemName: '[DEMO] Mixed Fruit Bowls',
-            category: 'Fruits',
-            foodType: 'Vegetarian',
-            quantity: '30 portions',
-            producedQuantity: 100,
-            consumedQuantity: 70,
-            surplusQuantity: 30,
-            unit: 'portions',
-            weightKg: 8,
-            pickupLocation: 'Salad Bar Annex',
-            expiryTime: new Date(now + (3 * hourMs)),
-            status: 'claimed',
-            qualityScore: 90,
-            qualityStatus: 'Fresh'
-        });
-        await recordDemoTraceability(listing4._id, donor._id, 'donor', 'FOOD_CREATED', 'Food surplus recorded');
-        
-        const claim4 = await Claim.create({
-            food: listing4._id,
-            receiver: receiver._id,
-            phone: '9876543210',
-            deliveryDetails: 'Coming in 30 mins',
-            otp: '123456',
-            status: 'claimed'
-        });
-        await recordDemoTraceability(listing4._id, receiver._id, 'receiver', 'CLAIM_CREATED', 'Food claim created', claim4._id);
 
         console.log('Demo scenario seeded successfully.');
         process.exit(0);
