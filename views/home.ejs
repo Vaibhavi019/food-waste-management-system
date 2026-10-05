@@ -1,91 +1,282 @@
 <%- include('partials/header') %>
 
-<section class="hero hero-premium">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-        <span class="hero-kicker">SIH 26234 • AI-POWERED ECOSYSTEM</span>
-        <h1 class="hero-title">
-            <span class="hero-highlight">SANCHARI</span>
-        </h1>
-        <p class="hero-subtitle">
-            Smart Food. Smarter Redistribution. AI-powered food waste reduction and sustainable redistribution ecosystem for Institutional Kitchens and Food Processing Units.
-        </p>
-        <div class="hero-cta-row">
-            <% if (locals.currentUser && currentUser.role === 'donor') { %>
-                <a href="/donor/dashboard" class="btn btn-hero">Command Center →</a>
-            <% } else if (locals.currentUser && currentUser.role === 'receiver') { %>
-                <a href="/receiver/dashboard" class="btn btn-hero">Command Center →</a>
-            <% } else if (locals.currentUser && currentUser.role === 'admin') { %>
-                <a href="/admin/dashboard" class="btn btn-hero">Command Center →</a>
-            <% } else { %>
-                <a href="/register" class="btn btn-hero">Get Started</a>
-                <a href="/login" class="btn btn-hero-secondary">Explore Platform</a>
-            <% } %>
-        </div>
-    </div>
-</section>
+<style>
+    /* Premium Home overrides */
+    .home-hero {
+        position: relative;
+        padding: 8rem 2rem 6rem;
+        text-align: center;
+        overflow: hidden;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .particles-bg {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(var(--border) 1px, transparent 1px);
+        background-size: 30px 30px;
+        z-index: -1;
+    }
 
-<section class="cta-section">
-    <h2 class="section-title">HOW SANCHARI WORKS</h2>
-    <p class="section-subtitle">A unified lifecycle from kitchen to community.</p>
+    .hero-title {
+        font-size: 4.5rem;
+        font-weight: 800;
+        letter-spacing: -2px;
+        margin-bottom: 1rem;
+        line-height: 1.1;
+    }
 
-    <div class="architecture-strip" style="max-width: 1100px;">
-        <span>Demand</span><b>→</b>
-        <span>Surplus</span><b>→</b>
-        <span>Quality</span><b>→</b>
-        <span>Matching</span><b>→</b>
-        <span>Logistics</span><b>→</b>
-        <span>Utilization</span><b>→</b>
-        <span>Traceability</span><b>→</b>
-        <span>Impact</span>
-    </div>
-</section>
+    .hero-subtitle {
+        font-size: 1.8rem;
+        font-weight: 400;
+        color: var(--info);
+        margin-bottom: 2rem;
+    }
 
-<section class="how-it-works">
-    <h2 class="section-title">Ecosystem Modules</h2>
-    <p class="section-subtitle">Predict surplus. Assess risk. Match recipients. Optimize redistribution. Track impact.</p>
-    <div class="steps-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-        <div class="step-card">
-            <div class="stat-icon-big">🧠</div>
-            <h3>Demand Forecasting</h3>
-            <p><span class="badge badge-success" style="font-size:0.6rem;">IMPLEMENTED PROTOTYPE</span> Determine optimal production limits using historical consumption data.</p>
-        </div>
-        <div class="step-card">
-            <div class="stat-icon-big">🌡️</div>
-            <h3>IoT Monitoring</h3>
-            <p><span class="badge badge-success" style="font-size:0.6rem;">IMPLEMENTED PROTOTYPE</span> Simulated real-time storage telemetry to protect food quality.</p>
-        </div>
-        <div class="step-card">
-            <div class="stat-icon-big">📸</div>
-            <h3>Quality-Risk Screening</h3>
-            <p><span class="badge badge-success" style="font-size:0.6rem;">IMPLEMENTED PROTOTYPE</span> AI-assisted visual anomaly detection (Human verification required).</p>
-        </div>
-        <div class="step-card">
-            <div class="stat-icon-big">🎯</div>
-            <h3>Recipient Matching</h3>
-            <p><span class="badge badge-success" style="font-size:0.6rem;">IMPLEMENTED PROTOTYPE</span> Algorithmic routing based on urgency, capacity, and distance.</p>
-        </div>
-        <div class="step-card">
-            <div class="stat-icon-big">🚚</div>
-            <h3>Smart Logistics</h3>
-            <p><span class="badge badge-success" style="font-size:0.6rem;">IMPLEMENTED PROTOTYPE</span> Estimated travel time and pickup feasibility calculation.</p>
-        </div>
-        <div class="step-card">
-            <div class="stat-icon-big">♻️</div>
-            <h3>Utilization Decision Support</h3>
-            <p><span class="badge badge-success" style="font-size:0.6rem;">IMPLEMENTED PROTOTYPE</span> Rule-based heuristics for redistribution, processing, and recovery.</p>
-        </div>
-        <div class="step-card">
-            <div class="stat-icon-big">🔗</div>
-            <h3>Digital Traceability</h3>
-            <p><span class="badge badge-success" style="font-size:0.6rem;">IMPLEMENTED PROTOTYPE</span> Tamper-evident hash-linked digital audit trail for verified handovers.</p>
-        </div>
-        <div class="step-card">
-            <div class="stat-icon-big">📊</div>
-            <h3>Sustainability Analytics</h3>
-            <p><span class="badge badge-success" style="font-size:0.6rem;">IMPLEMENTED PROTOTYPE</span> Recorded diversion metrics with transparent impact indicator estimation.</p>
-        </div>
+    .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 2rem;
+        border-radius: var(--radius-lg);
+        text-align: center;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .stat-value {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .workflow-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 1rem;
+        padding: 4rem 0;
+        position: relative;
+    }
+
+    /* Animated flow line behind steps */
+    .workflow-line {
+        position: absolute;
+        top: 50%;
+        left: 5%;
+        right: 5%;
+        height: 2px;
+        background: var(--chart-grid);
+        z-index: 0;
+        transform: translateY(-50%);
+        overflow: hidden;
+    }
+
+    .workflow-line-active {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, var(--primary), var(--info), transparent);
+        animation: flowRight 3s linear infinite;
+    }
+
+    @keyframes flowRight {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .step-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 1.5rem;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .step-box:hover {
+        transform: translateY(-5px) scale(1.05);
+        border-color: var(--primary);
+    }
+    
+    .step-icon {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 0.5rem;
+        color: var(--text);
+    }
+    
+    .step-box:hover .step-icon {
+        color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+        .workflow-container {
+            flex-direction: column;
+        }
+        .workflow-line {
+            top: 5%;
+            bottom: 5%;
+            left: 50%;
+            width: 2px;
+            height: auto;
+            transform: translateX(-50%);
+        }
+        .workflow-line-active {
+            background: linear-gradient(180deg, transparent, var(--primary), var(--info), transparent);
+            animation: flowDown 3s linear infinite;
+        }
+        @keyframes flowDown {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .hero-title { font-size: 3rem; }
+    }
+</style>
+
+<div class="home-hero hero-gradient">
+    <div class="particles-bg animate-fade-in delay-200"></div>
+    <div class="animate-fade-up" style="margin-bottom: 2rem;">
+        <span style="background: rgba(43, 192, 131, 0.15); border: 1px solid rgba(43, 192, 131, 0.3); color: #2bc083; padding: 0.4rem 1rem; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem;">
+            <span class="animate-pulse-dot" style="display: inline-block; width: 8px; height: 8px; background: #2bc083; border-radius: 50%;"></span>
+            SANCHARI AI PLATFORM ONLINE
+        </span>
     </div>
-</section>
+    
+    <h1 class="hero-title animate-fade-up">
+        <span style="color: var(--text);">Smart Food.</span><br/>
+        <span class="text-gradient">Smarter Redistribution.</span>
+    </h1>
+    <p class="hero-subtitle animate-fade-up delay-100">
+        AI-Powered Food Intelligence for Institutional Kitchens.
+    </p>
+    <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem; color: var(--text-muted);" class="animate-fade-up delay-200">
+        Predict surplus. Protect food quality. Match faster. Redistribute smarter with immutable traceability.
+    </p>
+    
+    <div style="display: flex; gap: 1rem; justify-content: center;" class="animate-fade-up delay-300">
+        <a href="/login" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 99px;">Platform Login</a>
+        <a href="#how-it-works" class="btn btn-secondary glass-panel" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 99px; transition: background 0.3s;">Explore Platform</a>
+    </div>
+</div>
+
+<main class="main-content">
+    <% if (locals.stats) { %>
+    <section class="animate-fade-up delay-400" style="margin-top: -4rem; position: relative; z-index: 10;">
+        <div class="grid-3">
+            <div class="stat-card">
+                <div class="stat-value"><%= stats.totalKg.toLocaleString() %> <span style="font-size: 1.5rem;">kg</span></div>
+                <div class="stat-label">Food Saved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value"><%= stats.totalMeals.toLocaleString() %></div>
+                <div class="stat-label">Portions Redistributed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value"><%= stats.completed.toLocaleString() %></div>
+                <div class="stat-label">Successful Handovers</div>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <section id="how-it-works" style="margin-top: 8rem; text-align: center;">
+        <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">The Intelligent Supply Chain</h2>
+        <p class="text-muted" style="max-width: 600px; margin: 0 auto 2rem;">End-to-end management of institutional food surplus, powered by artificial intelligence and cryptographic traceability.</p>
+        
+        <div class="workflow-container animate-fade-up delay-100">
+            <div class="workflow-line">
+                <div class="workflow-line-active"></div>
+            </div>
+            
+            <div class="step-box">
+                <svg class="step-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <div style="font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">PREDICT</div>
+            </div>
+            
+            <div class="step-box">
+                <svg class="step-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div style="font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">ASSESS</div>
+            </div>
+            
+            <div class="step-box">
+                <svg class="step-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <div style="font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">MATCH</div>
+            </div>
+            
+            <div class="step-box">
+                <svg class="step-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <div style="font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">REDISTRIBUTE</div>
+            </div>
+            
+            <div class="step-box">
+                <svg class="step-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                <div style="font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">TRACE</div>
+            </div>
+        </div>
+    </section>
+
+    <section style="margin-top: 8rem; padding-bottom: 6rem;">
+        <h2 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 4rem;">Platform Capabilities</h2>
+        
+        <div class="grid-2">
+            <div class="card card-body card-hover glass-panel" style="padding: 2.5rem; transition: transform 0.3s ease;">
+                <div style="margin-bottom: 1.5rem; color: var(--info);">
+                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">AI Demand Forecasting</h3>
+                <p class="text-muted" style="line-height: 1.6;">Prevent waste before it happens. SANCHARI analyzes historical consumption to recommend optimized production quantities for institutional kitchens.</p>
+            </div>
+            
+            <div class="card card-body card-hover glass-panel" style="padding: 2.5rem; transition: transform 0.3s ease;">
+                <div style="margin-bottom: 1.5rem; color: var(--success);">
+                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">Computer Vision + IoT Quality</h3>
+                <p class="text-muted" style="line-height: 1.6;">Ensure food safety through real-time temperature and humidity telemetry combined with visual risk assessments of surplus food.</p>
+            </div>
+            
+            <div class="card card-body card-hover glass-panel" style="padding: 2.5rem; transition: transform 0.3s ease;">
+                <div style="margin-bottom: 1.5rem; color: var(--warning);">
+                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">Intelligent Matching</h3>
+                <p class="text-muted" style="line-height: 1.6;">Proprietary algorithms prioritize surplus distribution based on critical urgency, food quality signals, and operational fit for receivers.</p>
+            </div>
+            
+            <div class="card card-body card-hover glass-panel" style="padding: 2.5rem; transition: transform 0.3s ease;">
+                <div style="margin-bottom: 1.5rem; color: var(--primary);">
+                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">Traceable Sustainable Redistribution</h3>
+                <p class="text-muted" style="line-height: 1.6;">Every step from listing to physical handover (verified via OTP) is immutably logged with SHA-256 hashes, computing real environmental impact.</p>
+            </div>
+        </div>
+    </section>
+</main>
 
 <%- include('partials/footer') %>

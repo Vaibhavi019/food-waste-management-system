@@ -50,6 +50,11 @@ const foodListingSchema = new mongoose.Schema({
         trim: true,
         default: 'portions'
     },
+    weightKg: {
+        type: Number,
+        min: 0,
+        default: null
+    },
 
     pickupLocation: {
         type: String,

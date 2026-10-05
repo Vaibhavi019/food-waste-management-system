@@ -1,56 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-    content="SANCHARI — AI-powered food waste reduction and sustainable redistribution ecosystem.">
+  <meta name="description" content="SANCHARI — AI-powered food waste reduction and sustainable redistribution ecosystem.">
   <title>SANCHARI • Smart Food. Smarter Redistribution.</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <script>
     if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.setAttribute('data-theme', 'dark');
     }
   </script>
+  <style>
+    /* Inline specific tweaks for header if needed, but mostly relying on style.css */
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--nav-text);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.2rem;
+      transition: color 0.2s;
+    }
+    .theme-toggle:hover {
+      color: var(--text);
+    }
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      .nav-toggle {
+        display: block;
+        color: var(--nav-text);
+        font-size: 1.5rem;
+      }
+    }
+    .alert-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1;
+      opacity: 0.5;
+      margin-left: auto;
+    }
+    .alert-close:hover { opacity: 1; }
+  </style>
 </head>
-
 <body>
   <nav class="navbar">
     <div class="nav-container">
-      <a href="/" class="nav-brand">
-        <span class="brand-icon">🍽️</span>
+      <a href="/" class="nav-brand" style="color: var(--text);">
+        <span class="brand-icon">S</span>
         <span class="brand-text">SANCHARI</span>
       </a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="/" class="nav-link">Home</a></li>
+      
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+      
+      <ul class="nav-links" id="navLinks" style="flex: 1; justify-content: flex-end;">
+        <li><a href="/" class="nav-link <%= locals.currentPath === '/' ? 'active' : '' %>">Home</a></li>
+        
         <% if (locals.currentUser && currentUser.role === 'donor') { %>
-          <li><a href="/donor/intelligence" class="nav-link">🧠 Intelligence</a></li>
-          <li><a href="/donor/add-food" class="nav-link">＋ Production</a></li>
+          <li><a href="/donor/dashboard" class="nav-link <%= locals.currentPath === '/donor/dashboard' ? 'active' : '' %>">Dashboard</a></li>
+          <li><a href="/donor/intelligence" class="nav-link <%= locals.currentPath === '/donor/intelligence' ? 'active' : '' %>">Intelligence</a></li>
+          <li><a href="/donor/add-food" class="nav-link <%= locals.currentPath === '/donor/add-food' ? 'active' : '' %>">Production</a></li>
         <% } %>
+        
         <% if (locals.currentUser && currentUser.role === 'receiver') { %>
-          <li><a href="/receiver/available-food" class="nav-link">🎯 Matches</a></li>
+          <li><a href="/receiver/dashboard" class="nav-link <%= locals.currentPath === '/receiver/dashboard' ? 'active' : '' %>">Dashboard</a></li>
+          <li><a href="/receiver/available-food" class="nav-link <%= locals.currentPath === '/receiver/available-food' ? 'active' : '' %>">Matches</a></li>
         <% } %>
-        <li><a href="/register" class="nav-link btn-nav">Register</a></li>
-        <li>
+        
+        <% if (locals.currentUser && currentUser.role === 'admin') { %>
+          <li><a href="/admin/dashboard" class="nav-link <%= locals.currentPath === '/admin/dashboard' ? 'active' : '' %>">Dashboard</a></li>
+        <% } %>
+        
+        <% if (!locals.currentUser) { %>
+          <li><a href="/register" class="nav-link">Register</a></li>
+          <li><a href="/login" class="nav-link">Login</a></li>
+        <% } %>
+        
+        <li style="margin-left: var(--space-md);">
           <button id="themeToggle" class="theme-toggle" aria-label="Toggle Dark Mode">
             <span class="theme-icon-light">🌙</span>
             <span class="theme-icon-dark" style="display:none;">☀️</span>
           </button>
         </li>
+        
         <% if (locals.currentUser) { %>
-          <li class="nav-user">
-            <span class="user-badge">
-              <%= currentUser.name %>
-            </span>
+          <li class="nav-user" style="border-left: 1px solid var(--border);">
+            <span class="user-badge" style="color: var(--text);" title="User Profile"><%= currentUser.name %></span>
             <a href="/logout" class="nav-link logout-link">Logout</a>
           </li>
-          <% } %>
+        <% } %>
       </ul>
     </div>
   </nav>
@@ -59,18 +106,15 @@
     <% if (locals.success) { %>
       <div class="alert alert-success" id="alertMsg">
         <span class="alert-icon">✅</span>
-        <span>
-          <%= success %>
-        </span>
+        <span style="flex: 1;"><%= success %></span>
         <button class="alert-close" onclick="this.parentElement.remove()">×</button>
       </div>
-      <% } %>
-        <% if (locals.error) { %>
-          <div class="alert alert-error" id="alertMsg">
-            <span class="alert-icon">❌</span>
-            <span>
-              <%= error %>
-            </span>
-            <button class="alert-close" onclick="this.parentElement.remove()">×</button>
-          </div>
-          <% } %>
+    <% } %>
+    
+    <% if (locals.error) { %>
+      <div class="alert alert-warning" id="alertMsg">
+        <span class="alert-icon">⚠️</span>
+        <span style="flex: 1;"><%= error %></span>
+        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+      </div>
+    <% } %>

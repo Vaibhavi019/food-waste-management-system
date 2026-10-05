@@ -1,57 +1,103 @@
 <%- include('../partials/header') %>
 
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <div>
-            <span class="eyebrow">SMART REDISTRIBUTION NETWORK</span>
-            <h1>Available Surplus</h1>
-            <p>Food is ranked by urgency, quality signal and operational match score.</p>
+<div class="main-content" style="max-width: 1440px; margin: 0 auto; padding: 2rem;">
+    <!-- HEADER -->
+    <header class="hero-gradient" style="background: var(--surface); color: var(--text); padding: 3rem; border-radius: var(--radius-lg); margin-bottom: 2rem; box-shadow: var(--shadow-md); border: 1px solid var(--border);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <span style="font-weight: 700; color: var(--info); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;">AI Prioritized Queue</span>
+                <h1 style="font-size: 2.5rem; font-weight: 800; margin-top: 0.5rem; margin-bottom: 0.5rem;">Food Matches</h1>
+                <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 600px;">Food is ranked by urgency, quality signal and operational match score.</p>
+            </div>
+            
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn" style="background: var(--surface-muted); color: var(--text); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 600;">All</button>
+                <button class="btn" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 600;">Urgent</button>
+                <button class="btn" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 600;">Fresh</button>
+                <button class="btn" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 600;">Vegetarian</button>
+                <button class="btn" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 600;">High Match</button>
+            </div>
         </div>
-    </div>
-
-    <div class="info-box">
-        <span class="info-icon">🎯</span>
-        <p><strong>AI match score</strong> is a prototype prioritization signal. It helps recipients focus on food that needs action sooner; it does not replace operator verification.</p>
-    </div>
+    </header>
 
     <% if (foods.length === 0) { %>
-        <div class="empty-state">
-            <h3>No food available right now</h3>
-            <p>Check back soon — institutional kitchens can publish new surplus in real time.</p>
+        <div style="background: var(--surface); padding: 2rem; border-radius: var(--radius-lg); border: 1px dashed var(--border); display: flex; align-items: center; gap: 1.5rem; margin-top: var(--space-lg);">
+            <div style="font-size: 2.5rem; opacity: 0.5;">📡</div>
+            <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text);">NO ACTIVE MATCHES</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">No surplus requires action right now. The AI queue will update automatically when new surplus is published.</p>
+            </div>
+            <a href="/receiver/available-food" class="btn btn-secondary" style="margin-left: auto;">Refresh Matches</a>
         </div>
     <% } else { %>
-        <div class="cards-grid">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 1.5rem; margin-top: var(--space-lg);">
             <% foods.forEach(food => { %>
-            <div class="card <%= food.urgency === 'Critical' ? 'card-critical' : '' %>">
-                <div class="card-header">
-                    <div>
-                        <h3><%= food.itemName %></h3>
-                        <small><%= food.category || 'Prepared Food' %> • <%= food.foodType || 'Unknown' %></small>
+                <div class="card" style="border: 1px solid var(--border); border-top: 4px solid <%= food.urgency === 'Critical' ? 'var(--danger)' : food.urgency === 'High' ? 'var(--warning)' : 'var(--primary)' %>; display: flex; flex-direction: column; box-shadow: var(--shadow-sm); transition: transform 0.2s, box-shadow 0.2s; overflow: hidden;">
+                    
+                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-light); background: var(--surface-muted);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                            <div>
+                                <% if (food.urgency === 'Critical' || food.urgency === 'High') { %>
+                                    <span class="badge badge-danger" style="margin-bottom: 0.5rem; display: inline-block;">[<%= food.urgency.toUpperCase() %> URGENCY]</span>
+                                <% } %>
+                                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text);"><%= food.itemName %></h3>
+                                <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-top: 0.25rem;">
+                                    <%= food.category || 'Prepared Food' %> • <%= food.foodType || 'Unknown' %>
+                                </div>
+                            </div>
+                            <div style="text-align: right; background: white; padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-light); min-width: 80px;">
+                                <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">AI Match</div>
+                                <div style="font-size: 1.25rem; font-weight: 800; color: <%= food.matchScore >= 80 ? 'var(--success)' : 'var(--info)' %>;"><%= food.matchScore %>%</div>
+                            </div>
+                        </div>
                     </div>
-                    <span class="match-score"><%= food.matchScore %>% Match</span>
-                </div>
-                <div class="card-body">
-                    <div class="food-detail"><span class="detail-label">📦 Surplus:</span> <%= food.quantity %></div>
-                    <div class="food-detail"><span class="detail-label">🧠 Quality:</span> <%= food.qualityScore || '—' %>/100 (<%= food.qualityStatus || 'Unknown' %>)</div>
-                    <div class="food-detail"><span class="detail-label">⏱ Time left:</span> <%= food.hoursLeft %> hours</div>
-                    <div class="food-detail"><span class="detail-label">🚚 Route estimate:</span> <%= food.routeEstimate && food.routeEstimate.available ? food.routeEstimate.routeLabel : 'Coordinates needed' %></div>
-                    <div class="food-detail"><span class="detail-label">📍 Pickup:</span> <%= food.pickupLocation %></div>
-                    <div class="food-detail"><span class="detail-label">🏢 Source:</span> <%= food.donor.organization || food.donor.name %> <% if (food.donor.isVerified) { %><span class="verified-badge" title="Verified organization">✓</span><% } %></div>
-                    <div class="food-detail"><span class="detail-label">🚦 Priority:</span>
-                        <span class="badge badge-<%= food.urgency === 'Critical' ? 'danger' : food.urgency === 'High' ? 'warning' : food.urgency === 'Medium' ? 'info' : 'success' %>"><%= food.urgency %></span>
+
+                    <div style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column; gap: 1.25rem;">
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Quantity</div>
+                                <div style="font-size: 1.1rem; font-weight: 700; color: var(--text);"><%= food.quantity %></div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Expiry</div>
+                                <div style="font-size: 1.1rem; font-weight: 700; color: <%= food.hoursLeft <= 2 ? 'var(--danger)' : 'var(--text)' %>;"><%= food.hoursLeft %>h remaining</div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid var(--border-light); padding-top: 1rem;">
+                            <div>
+                                <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Quality Signal</div>
+                                <div style="font-size: 0.9rem; font-weight: 600; color: var(--text);">
+                                    <%= food.qualityStatus || 'Unknown' %> • <%= food.qualityScore || '—' %>/100
+                                </div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Pickup</div>
+                                <div style="font-size: 0.9rem; font-weight: 600; color: var(--text); line-height: 1.2;"><%= food.pickupLocation %></div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(40,120,200,0.05); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(40,120,200,0.15); margin-top: auto;">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--info); text-transform: uppercase; margin-bottom: 0.5rem;">Why Prioritized</div>
+                            <div style="font-size: 0.85rem; color: var(--text); line-height: 1.4;">
+                                <% if (food.matchDetails && food.matchDetails.factors) { %>
+                                    <%= food.matchDetails.factors.map(f => f.reason).join(' + ') %>
+                                <% } else { %>
+                                    <%= food.urgency %> urgency + suitable quantity + good quality signal
+                                <% } %>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="padding: 1.25rem 1.5rem; background: var(--surface-muted); border-top: 1px solid var(--border); display: flex; gap: 1rem;">
+                        <a href="/receiver/claim/<%= food._id %>" class="btn btn-primary" style="flex: 1; padding: 0.75rem; font-weight: 700; text-align: center;">Claim Food</a>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <a href="/receiver/claim/<%= food._id %>" class="btn btn-primary btn-block">Claim & Schedule Pickup</a>
-                </div>
-            </div>
             <% }) %>
         </div>
     <% } %>
-
-    <div class="form-actions" style="margin-top:1.5rem;">
-        <a href="/receiver/dashboard" class="btn btn-secondary">← Back to Hub</a>
-    </div>
 </div>
 
 <%- include('../partials/footer') %>

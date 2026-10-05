@@ -60,6 +60,9 @@ router.post('/register', async (req, res) => {
 // GET /login
 router.get('/login', (req, res) => {
     if (req.session.userId) {
+        if (req.session.role === 'donor') return res.redirect('/donor/dashboard');
+        if (req.session.role === 'receiver') return res.redirect('/receiver/dashboard');
+        if (req.session.role === 'admin') return res.redirect('/admin/dashboard');
         return res.redirect('/');
     }
     const role = req.query.role || '';
@@ -120,7 +123,16 @@ router.post('/login', async (req, res) => {
 
             req.session.save((err) => {
                 if (err) console.error('Session save error:', err);
-                return res.redirect('/');
+                
+                if (userData.role === 'donor') {
+                    return res.redirect('/donor/dashboard');
+                } else if (userData.role === 'receiver') {
+                    return res.redirect('/receiver/dashboard');
+                } else if (userData.role === 'admin') {
+                    return res.redirect('/admin/dashboard');
+                } else {
+                    return res.redirect('/');
+                }
             });
         });
     } catch (err) {

@@ -1,50 +1,56 @@
-<%- include('partials/header') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - SANCHARI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="background: linear-gradient(135deg, #1A202C 0%, #2D3748 100%); display: flex; flex-direction: column; min-height: 100vh; font-family: 'Inter', sans-serif;">
 
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h1>Welcome Back</h1>
-                <p>Log in to your account</p>
-            </div>
-            <form action="/login" method="POST" class="auth-form">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username" placeholder="Enter your username" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="password-wrapper">
-                        <input type="password" name="password" id="password" placeholder="Enter your password" required>
-                        <button type="button" class="password-toggle" onclick="togglePassword('password', this)"
-                            aria-label="Toggle password visibility">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-block">Log In</button>
-            </form>
-            <div class="auth-footer">
-                <p>Don't have an account? <a href="/register">Register now</a></p>
-            </div>
-        </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem 1rem;">
+    
+    <div style="margin-bottom: 2rem; text-align: center;">
+      <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: #0B8F55; color: #fff; border-radius: 8px; font-weight: 800; font-size: 1.5rem; margin-bottom: 1rem;">S</div>
+      <h1 style="font-size: 1.75rem; font-weight: 800; color: white; letter-spacing: 1px; margin: 0;">SANCHARI</h1>
+      <p style="color: #A0AEC0; font-size: 0.95rem; margin-top: 0.25rem;">Enterprise Food Intelligence & Redistribution</p>
     </div>
 
-    <script>
-        function togglePassword(inputId, btn) {
-            const input = document.getElementById(inputId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
-            } else {
-                input.type = 'password';
-                btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-            }
-        }
-    </script>
+    <div style="width: 100%; max-width: 400px; background: #2D3748; padding: 2.5rem 2rem; border-radius: 12px; border: 1px solid #4A5568; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: white; margin-bottom: 1.5rem; text-align: center; margin-top: 0;">Sign in to your account</h2>
 
-    <%- include('partials/footer') %>
+        <% if (locals.error) { %>
+          <div style="background: rgba(245, 101, 101, 0.1); border: 1px solid rgba(245, 101, 101, 0.3); color: #FC8181; padding: 0.75rem; margin-bottom: 1.5rem; font-size: 0.85rem; border-radius: 6px;">
+            <%= error %>
+          </div>
+        <% } %>
+        <% if (locals.success) { %>
+          <div style="background: rgba(72, 187, 120, 0.1); border: 1px solid rgba(72, 187, 120, 0.3); color: #68D391; padding: 0.75rem; margin-bottom: 1.5rem; font-size: 0.85rem; border-radius: 6px;">
+            <%= success %>
+          </div>
+        <% } %>
+
+        <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem; margin: 0;">
+          <div>
+            <label for="username" style="font-size: 0.85rem; font-weight: 600; color: #E2E8F0; margin-bottom: 0.5rem; display: block;">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required style="width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid #4A5568; background: #1A202C; color: white; outline: none; font-family: 'Inter', sans-serif; box-sizing: border-box;">
+          </div>
+          <div>
+            <label for="password" style="font-size: 0.85rem; font-weight: 600; color: #E2E8F0; margin-bottom: 0.5rem; display: block;">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required style="width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid #4A5568; background: #1A202C; color: white; outline: none; font-family: 'Inter', sans-serif; box-sizing: border-box;">
+          </div>
+          <button type="submit" style="width: 100%; padding: 0.85rem; font-size: 1rem; font-weight: 700; margin-top: 0.5rem; background: #0B8F55; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Sign In</button>
+        </form>
+
+        <div style="margin-top: 2rem; text-align: center; font-size: 0.85rem; color: #A0AEC0;">
+          Don't have an account? <a href="/register" style="color: #63B3ED; font-weight: 600; text-decoration: none;">Request Access</a>
+        </div>
+        <div style="margin-top: 1rem; text-align: center;">
+          <a href="/" style="font-size: 0.85rem; color: #718096; text-decoration: underline;">Return to Home</a>
+        </div>
+    </div>
+  </div>
+
+</body>
+</html>

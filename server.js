@@ -48,14 +48,24 @@ app.use((req, res, next) => {
     } : null;
     res.locals.success = req.session.success || null;
     res.locals.error = req.session.error || null;
+    res.locals.currentPath = req.path;
     delete req.session.success;
     delete req.session.error;
     next();
 });
 
 // Routes
-app.get('/', (req, res) => {
-    res.render('home');
+app.get('/', async (req, res) => {
+    try {
+        const completedListings = await FoodListing.find({ status: 'completed' });
+        const completed = completedListings.length;
+        const totalKg = completedListings.reduce((sum, item) => sum + (item.weightKg || 0), 0);
+        const totalMeals = completedListings.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+        res.render('home', { stats: { completed, totalKg: Math.round(totalKg), totalMeals } });
+    } catch (err) {
+        console.error('Error fetching home stats:', err);
+        res.render('home', { stats: { completed: 0, totalKg: 0, totalMeals: 0 } });
+    }
 });
 
 app.use('/', authRoutes);

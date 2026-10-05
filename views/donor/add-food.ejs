@@ -1,140 +1,178 @@
 <%- include('../partials/header') %>
 
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <div>
-            <span class="eyebrow">AI DATA CAPTURE</span>
-            <h1>Register Production & Surplus</h1>
-            <p>Capture the minimum operational data needed for demand, waste-risk and quality intelligence.</p>
-        </div>
-    </div>
+<div class="main-content">
+    <!-- HEADER -->
+    <header style="margin-bottom: var(--space-xl);">
+        <span style="font-weight: 700; color: var(--primary); font-size: 0.85rem; letter-spacing: 0.5px; text-transform: uppercase;">AI Data Capture</span>
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text); margin-top: 0.25rem; margin-bottom: 0.5rem;">Register Production & Surplus</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem;">Capture operational data needed for demand, waste-risk and quality intelligence.</p>
+    </header>
 
-    <div class="form-container form-container-wide">
-        <form action="/donor/add-food" method="POST" class="styled-form" enctype="multipart/form-data">
-            <div class="form-section-title">1. Food & production</div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="itemName">Food Item</label>
-                    <input type="text" name="itemName" id="itemName" placeholder="e.g., Vegetable Biryani" required>
-                </div>
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <select name="category" id="category">
-                        <option>Prepared Food</option>
-                        <option>Bakery</option>
-                        <option>Fruits & Vegetables</option>
-                        <option>Dairy</option>
-                        <option>Packaged Food</option>
-                        <option>Raw Material</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="foodType">Food Type</label>
-                    <select name="foodType" id="foodType">
-                        <option>Vegetarian</option>
-                        <option>Non-Vegetarian</option>
-                        <option>Vegan</option>
-                        <option>Mixed</option>
-                        <option>Unknown</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="unit">Unit</label>
-                    <select name="unit" id="unit">
-                        <option>portions</option>
-                        <option>kg</option>
-                        <option>packets</option>
-                        <option>litres</option>
-                        <option>units</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row three-col">
-                <div class="form-group">
-                    <label for="producedQuantity">Produced</label>
-                    <input type="number" min="0" step="1" name="producedQuantity" id="producedQuantity" placeholder="1500" required>
-                </div>
-                <div class="form-group">
-                    <label for="consumedQuantity">Consumed / Used</label>
-                    <input type="number" min="0" step="1" name="consumedQuantity" id="consumedQuantity" placeholder="1380" required>
-                </div>
-                <div class="form-group">
-                    <label for="quantity">Surplus Listing</label>
-                    <input type="text" name="quantity" id="quantity" placeholder="120 portions" required>
-                </div>
-            </div>
-
-            <div class="smart-calculator">
-                <div>
-                    <span>AI surplus calculation</span>
-                    <strong id="surplusPreview">Enter production and consumption</strong>
-                </div>
-                <small>Surplus = produced − consumed</small>
-            </div>
-
-            <div class="form-section-title">2. AI-Assisted Quality Risk Assessment</div>
+    <div class="card" style="max-width: 900px; margin: 0 auto;">
+        <form action="/donor/add-food" method="POST" enctype="multipart/form-data">
             
-            <div class="form-group" style="margin-bottom: 2rem;">
-                <label for="foodImage">Food Image (Prototype Visual Assessment)</label>
-                <div style="border: 2px dashed var(--border-light); padding: 2rem; text-align: center; border-radius: var(--radius-md); background: var(--surface-light); margin-top: 0.5rem;">
-                    <input type="file" name="foodImage" id="foodImage" accept="image/jpeg,image/png,image/webp" style="display: block; margin: 0 auto 1rem auto; max-width: 100%;">
-                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.5rem;">Upload an image for AI-assisted visual screening.</p>
+            <!-- FOOD DETAILS -->
+            <div style="padding: var(--space-xl); border-bottom: 1px solid var(--border);">
+                <div style="margin-bottom: var(--space-lg);">
+                    <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text);">Food Details</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Identify the type of food produced.</p>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: var(--space-lg);">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="itemName">Food Name</label>
+                        <input type="text" name="itemName" id="itemName" placeholder="e.g., Vegetable Biryani" required>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group" style="margin: 0;">
+                            <label for="category">Category</label>
+                            <select name="category" id="category">
+                                <option>Prepared Food</option>
+                                <option>Bakery</option>
+                                <option>Fruits & Vegetables</option>
+                                <option>Dairy</option>
+                                <option>Packaged Food</option>
+                                <option>Raw Material</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label for="foodType">Food Type</label>
+                            <select name="foodType" id="foodType">
+                                <option>Vegetarian</option>
+                                <option>Non-Vegetarian</option>
+                                <option>Vegan</option>
+                                <option>Mixed</option>
+                                <option>Unknown</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-section-title">3. Quality & storage telemetry</div>
+            <!-- QUANTITY -->
+            <div style="padding: var(--space-xl); border-bottom: 1px solid var(--border); background: var(--surface-muted);">
+                <div style="margin-bottom: var(--space-lg);">
+                    <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text);">Quantity & Surplus</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Record production metrics to calculate surplus automatically.</p>
+                </div>
+                
+                <div class="grid-3" style="margin-bottom: var(--space-lg);">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="producedQuantity">Produced</label>
+                        <input type="number" min="0" step="1" name="producedQuantity" id="producedQuantity" placeholder="1500" required>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="consumedQuantity">Consumed / Used</label>
+                        <input type="number" min="0" step="1" name="consumedQuantity" id="consumedQuantity" placeholder="1380" required>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="quantity">Surplus Listing</label>
+                        <input type="text" name="quantity" id="quantity" placeholder="120 portions" required style="font-weight: 600; color: var(--primary-dark);">
+                    </div>
+                </div>
 
-            <div class="form-row three-col">
-                <div class="form-group">
-                    <label for="storageTempC">Storage temperature (°C)</label>
-                    <input type="number" step="0.1" name="storageTempC" id="storageTempC" placeholder="5.5">
+                <div class="grid-2" style="margin-bottom: var(--space-lg);">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="unit">Unit</label>
+                        <select name="unit" id="unit">
+                            <option>portions</option>
+                            <option>kg</option>
+                            <option>packets</option>
+                            <option>litres</option>
+                            <option>units</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="weightKg">Actual food weight (kg) <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
+                        <input type="number" name="weightKg" id="weightKg" step="0.01" min="0" placeholder="12.50">
+                        <span style="display: block; margin-top: 0.25rem; font-size: 0.75rem; color: var(--text-muted);">Used for environmental impact calculations.</span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="humidityPct">Humidity (%)</label>
-                    <input type="number" min="0" max="100" step="1" name="humidityPct" id="humidityPct" placeholder="65">
+
+                <div style="background: var(--primary-soft); padding: var(--space-md); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(11, 143, 85, 0.2);">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary-dark);">AI Surplus Calculator</span>
+                    <strong id="surplusPreview" style="font-size: 0.95rem; color: var(--primary-dark);">Enter production and consumption</strong>
                 </div>
+            </div>
+
+            <!-- LOCATION -->
+            <div style="padding: var(--space-xl); border-bottom: 1px solid var(--border);">
+                <div style="margin-bottom: var(--space-lg);">
+                    <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text);">Location Details</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Where should the food be collected?</p>
+                </div>
+                
                 <div class="form-group">
+                    <label for="pickupLocation">Pickup Location</label>
+                    <textarea name="pickupLocation" id="pickupLocation" rows="2" placeholder="Institution kitchen / cafeteria address" required style="resize: vertical;"></textarea>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="latitude">Latitude <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
+                        <input type="number" step="any" name="latitude" id="latitude" placeholder="17.3850">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="longitude">Longitude <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
+                        <input type="number" step="any" name="longitude" id="longitude" placeholder="78.4867">
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUALITY & SAFETY -->
+            <div style="padding: var(--space-xl); border-bottom: 1px solid var(--border); background: var(--surface-muted);">
+                <div style="margin-bottom: var(--space-lg);">
+                    <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text);">Quality & Safety Telemetry</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Simulate IoT data and expiry for safety screening.</p>
+                </div>
+
+                <div class="grid-3" style="margin-bottom: var(--space-lg);">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="storageTempC">Storage Temp (°C)</label>
+                        <input type="number" step="0.1" name="storageTempC" id="storageTempC" placeholder="5.5">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="humidityPct">Humidity (%)</label>
+                        <input type="number" min="0" max="100" step="1" name="humidityPct" id="humidityPct" placeholder="65">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="expiryTime">Safe Until (Expiry)</label>
+                        <input type="datetime-local" name="expiryTime" id="expiryTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin: 0;">
                     <label for="pickupWindowMinutes">Pickup window (minutes)</label>
                     <input type="number" min="15" step="15" name="pickupWindowMinutes" id="pickupWindowMinutes" value="120">
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="expiryTime">Safe Until / Expiry</label>
-                <input type="datetime-local" name="expiryTime" id="expiryTime" required>
-            </div>
-
-            <div class="form-section-title">4. Redistribution coordinates</div>
-
-            <div class="form-group">
-                <label for="pickupLocation">Pickup Location</label>
-                <textarea name="pickupLocation" id="pickupLocation" rows="2" placeholder="Institution kitchen / cafeteria address" required></textarea>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="latitude">Latitude <span class="text-muted">(optional)</span></label>
-                    <input type="number" step="any" name="latitude" id="latitude" placeholder="17.3850">
+            <!-- AI QUALITY ASSESSMENT -->
+            <div style="padding: var(--space-xl);">
+                <div style="margin-bottom: var(--space-lg);">
+                    <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">📸</span> AI Quality Assessment
+                    </h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Upload an image of the food for visual anomaly detection.</p>
                 </div>
-                <div class="form-group">
-                    <label for="longitude">Longitude <span class="text-muted">(optional)</span></label>
-                    <input type="number" step="any" name="longitude" id="longitude" placeholder="78.4867">
+                
+                <div style="border: 2px dashed var(--primary); padding: 3rem 2rem; text-align: center; border-radius: var(--radius-lg); background: var(--primary-soft); margin-bottom: var(--space-lg);">
+                    <input type="file" name="foodImage" id="foodImage" accept="image/jpeg,image/png,image/webp" style="display: block; margin: 0 auto; max-width: 100%; border: none; padding: 0; background: transparent;">
+                </div>
+
+                <div class="alert alert-info" style="margin: 0;">
+                    <span class="alert-icon">🧠</span>
+                    <div>
+                        <p style="font-size: 0.85rem; font-weight: 500; color: var(--info); margin-bottom: 0.25rem;">The prototype calculates an AI-assisted quality score from <strong>time remaining + storage telemetry + visual anomalies</strong>.</p>
+                        <p style="font-size: 0.75rem; color: var(--info); opacity: 0.8;">It is a prototype screening signal, not a trained food-safety certification. <strong>Human verification is required before redistribution.</strong></p>
+                    </div>
                 </div>
             </div>
 
-            <div class="info-box">
-                <span class="info-icon">🧠</span>
-                <p>The prototype calculates an AI-assisted quality score from <strong>time remaining + storage telemetry + visual anomalies</strong>. It is a prototype screening signal, not a trained food-safety certification. <strong>Human verification required before redistribution.</strong></p>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">🧠 Run Intelligence & Register</button>
-                <a href="/donor/dashboard" class="btn btn-secondary">Cancel</a>
+            <!-- ACTIONS -->
+            <div style="padding: var(--space-xl); background: var(--nav-bg); display: flex; justify-content: flex-end; gap: var(--space-md); align-items: center;">
+                <a href="/donor/dashboard" style="font-size: 0.9rem; font-weight: 600; color: var(--nav-text); margin-right: auto;">Cancel</a>
+                <button type="submit" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1rem; box-shadow: var(--shadow-md);">Run Intelligence & Register</button>
             </div>
         </form>
     </div>

@@ -1,143 +1,191 @@
 <%- include('../partials/header') %>
 
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1>SANCHARI System Command Center</h1>
-        <p>Global oversight of the redistribution ecosystem, sustainability impact, and logistics.</p>
-    </div>
+<div class="main-content">
+    <!-- HEADER -->
+    <header style="margin-bottom: var(--space-xl);">
+        <span style="font-weight: 700; color: var(--danger); font-size: 0.85rem; letter-spacing: 0.5px; text-transform: uppercase;">Global Oversight</span>
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text); margin-top: 0.25rem; margin-bottom: 0.5rem;">SANCHARI Operations Center</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem;">Monitor the redistribution ecosystem, sustainability impact, and network logistics.</p>
+        
+        <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+            <a href="/admin/users" class="btn btn-primary">👥 Manage Network</a>
+            <a href="/admin/listings" class="btn btn-secondary">📋 Manage Listings</a>
+        </div>
+    </header>
 
-    <!-- Primary Stats -->
-    <div class="stats-grid stats-grid-4">
-        <div class="stat-card">
-            <div class="stat-value"><%= stats.totalDonors %></div>
-            <div class="stat-label">Total institutions</div>
+    <!-- KPI STRIP -->
+    <div class="grid-4" style="margin-bottom: var(--space-xl);">
+        <div class="card" style="padding: var(--space-md) var(--space-lg); display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-sm);">Food Diverted</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--text); line-height: 1;"><%= impact.foodDivertedKg ? impact.foodDivertedKg.toLocaleString() : 0 %> <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">kg</span></div>
         </div>
-        <div class="stat-card stat-info">
-            <div class="stat-value"><%= stats.totalReceivers %></div>
-            <div class="stat-label">Total recipients</div>
+        <div class="card" style="padding: var(--space-md) var(--space-lg); display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-sm);">Active Surplus</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--warning); line-height: 1;"><%= stats.activeListings %> <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">listings</span></div>
         </div>
-        <div class="stat-card stat-success">
-            <div class="stat-value"><%= stats.totalListings %></div>
-            <div class="stat-label">Food listed</div>
+        <div class="card" style="padding: var(--space-md) var(--space-lg); display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-sm);">Completed Handovers</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--success); line-height: 1;"><%= stats.completedDonations %></div>
         </div>
-        <div class="stat-card stat-success">
-            <div class="stat-value"><%= stats.completedDonations %></div>
-            <div class="stat-label">Food redistributed</div>
-        </div>
-        <div class="stat-card stat-warning">
-            <div class="stat-value"><%= stats.activeListings %></div>
-            <div class="stat-label">Active surplus</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value"><%= stats.totalClaims - stats.completedDonations %></div>
-            <div class="stat-label">Active claims</div>
-        </div>
-        <div class="stat-card stat-success">
-            <div class="stat-value"><%= stats.completedDonations %></div>
-            <div class="stat-label">Completed handovers</div>
-        </div>
-        <div class="stat-card stat-info">
-            <div class="stat-value text-muted">Awaiting Data</div>
-            <div class="stat-label">Food waste prevented</div>
+        <div class="card" style="padding: var(--space-md) var(--space-lg); display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-sm);">Network Institutions</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--info); line-height: 1;"><%= stats.totalDonors %></div>
         </div>
     </div>
 
-    <div class="dashboard-grid-2">
-        <!-- Sections Awaiting Data -->
-        <section class="panel">
-            <div class="panel-header">
-                <h2>System Activity</h2>
-                <span class="badge badge-info">Awaiting Data</span>
-            </div>
-            <p class="text-muted" style="font-size:0.9rem;">Aggregated logs of user logins, listing creations, and matches.</p>
-        </section>
-
-        <section class="panel">
-            <div class="panel-header">
-                <h2>Redistribution Pipeline</h2>
-                <span class="badge badge-info">Awaiting Data</span>
-            </div>
-            <p class="text-muted" style="font-size:0.9rem;">Live tracking of food from institutional kitchens to recipient drop-offs.</p>
-        </section>
-
-        <section class="panel">
-            <div class="panel-header">
-                <h2>Food Categories</h2>
-                <span class="badge badge-info">Awaiting Data</span>
-            </div>
-            <p class="text-muted" style="font-size:0.9rem;">Breakdown of surplus by vegetarian, non-vegetarian, perishable, and non-perishable categories.</p>
-        </section>
-
-        <section class="panel">
-            <div class="panel-header">
-                <h2>Institution Activity</h2>
-                <span class="badge badge-info">Awaiting Data</span>
-            </div>
-            <p class="text-muted" style="font-size:0.9rem;">Top donating institutions and their compliance scores.</p>
-        </section>
-
-        <section class="panel">
-            <div class="panel-header">
-                <h2>Recipient Activity</h2>
-                <span class="badge badge-info">Awaiting Data</span>
-            </div>
-            <p class="text-muted" style="font-size:0.9rem;">NGO engagement metrics and pickup reliability ratings.</p>
-        </section>
-
-        <section class="panel">
-            <div class="panel-header">
-                <h2>Sustainability Analytics (Phase 10)</h2>
-                <span class="badge badge-success">Active</span>
-            </div>
-            <% if (impact.foodDivertedKg > 0) { %>
-                <p class="text-muted" style="font-size:0.9rem;">Total Food Diverted: <strong><%= impact.foodDivertedKg.toLocaleString() %> kg</strong></p>
-                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
-                    <div>• Redistributed: <%= impact.redistributedKg.toLocaleString() %> kg</div>
-                    <div>• Processed/Upcycled: <%= impact.processedKg.toLocaleString() %> kg</div>
-                    <div>• Organic Recovery: <%= impact.organicRecoveryKg.toLocaleString() %> kg</div>
+    <!-- MAIN GRID -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-xl);">
+        
+        <!-- LEFT COLUMN: LIVE MODULES -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-lg);">
+            
+            <!-- SUSTAINABILITY ANALYTICS -->
+            <section class="card">
+                <div class="card-header" style="background: var(--primary-soft);">
+                    <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--primary-dark); margin: 0; display: flex; align-items: center; gap: 0.5rem;"><span style="font-size: 1.25rem;">🌱</span> Sustainability Analytics</h2>
+                    <span class="badge badge-success">Active</span>
                 </div>
-                <div style="margin-top: 0.75rem; border-top: 1px solid var(--border-light); padding-top: 0.75rem;">
-                    <p class="text-muted" style="font-size:0.85rem; font-weight: 600;">Estimated Impact</p>
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">
-                        <div>• CO₂e Avoided: <%= impact.estimatedImpact.co2eAvoidedKg !== null ? impact.estimatedImpact.co2eAvoidedKg.toLocaleString() + ' kg' : 'Unavailable' %></div>
-                        <div>• Water Footprint: <%= impact.estimatedImpact.waterAvoidedLiters !== null ? impact.estimatedImpact.waterAvoidedLiters.toLocaleString() + ' L' : 'Unavailable' %></div>
+                
+                <div class="card-body">
+                    <% if (impact.foodDivertedKg > 0) { %>
+                        <div class="grid-2" style="margin-bottom: var(--space-lg);">
+                            <div>
+                                <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.5px;">Total Diverted</div>
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--text);"><%= impact.foodDivertedKg.toLocaleString() %> <span style="font-size: 1rem; color: var(--text-muted); font-weight: 500;">kg</span></div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: flex-end;">
+                                <div class="flex-between" style="font-size: 0.85rem; color: var(--text-muted);">
+                                    <span>Redistributed:</span>
+                                    <strong style="color: var(--text);"><%= (impact.redistributedKg || 0).toLocaleString() %> kg</strong>
+                                </div>
+                                <div class="flex-between" style="font-size: 0.85rem; color: var(--text-muted);">
+                                    <span>Processed/Upcycled:</span>
+                                    <strong style="color: var(--text);"><%= (impact.processedKg || 0).toLocaleString() %> kg</strong>
+                                </div>
+                                <div class="flex-between" style="font-size: 0.85rem; color: var(--text-muted);">
+                                    <span>Organic Recovery:</span>
+                                    <strong style="color: var(--text);"><%= (impact.organicRecoveryKg || 0).toLocaleString() %> kg</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="padding-top: var(--space-lg); border-top: 1px dashed var(--border);">
+                            <div style="font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Estimated Environmental Impact</div>
+                            <div class="grid-2">
+                                <% if (impact.estimatedImpact.co2eAvoidedKg !== null) { %>
+                                    <div style="background: var(--surface-muted); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 0.25rem;">Estimated CO₂e Impact</div>
+                                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--text);"><%= impact.estimatedImpact.co2eAvoidedKg.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %> <span style="font-size: 0.85rem; color: var(--text-muted);">kg</span></div>
+                                    </div>
+                                <% } %>
+                                <% if (impact.estimatedImpact.waterAvoidedLiters !== null) { %>
+                                    <div style="background: var(--surface-muted); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 0.25rem;">Estimated Water Footprint</div>
+                                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--text);"><%= impact.estimatedImpact.waterAvoidedLiters.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %> <span style="font-size: 0.85rem; color: var(--text-muted);">L</span></div>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 1rem;">
+                                Estimated using recorded food weight and configured food-specific factors.
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; text-align: right;">Data derived from <%= impact.dataCoverage.completedHandoverRecords + impact.dataCoverage.confirmedUtilizationRecords %> completed actions.</p>
+                        </div>
+                    <% } else { %>
+                        <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;">🌱</div>
+                            <p>No historical sustainability records available yet.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </section>
+            
+            <!-- TRACEABILITY & UTILIZATION -->
+            <div class="grid-2">
+                <section class="card">
+                    <div class="card-header">
+                        <h2 style="font-size: 1rem; font-weight: 700; margin: 0; color: var(--text);">Traceability Overview</h2>
+                        <span class="badge badge-success">Active</span>
+                    </div>
+                    <div class="card-body" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="flex-between" style="border-bottom: 1px dashed var(--border); padding-bottom: 0.75rem;">
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Lifecycle events</span>
+                            <strong style="font-size: 1.1rem; color: var(--text);"><%= stats.totalTraceabilityEvents || 0 %></strong>
+                        </div>
+                        <div class="flex-between">
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Verified handovers</span>
+                            <strong style="font-size: 1.1rem; color: var(--text);"><%= stats.completedHandovers || 0 %></strong>
+                        </div>
+                        <div style="margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                            ✓ SHA-256 integrity checks enabled
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="card-header">
+                        <h2 style="font-size: 1rem; font-weight: 700; margin: 0; color: var(--text);">Utilization Pathways</h2>
+                        <span class="badge badge-info">Active</span>
+                    </div>
+                    <div class="card-body" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="flex-between" style="border-bottom: 1px dashed var(--border); padding-bottom: 0.75rem;">
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Processing Recs</span>
+                            <strong style="font-size: 1.1rem; color: var(--text);"><%= stats.processingRecsCount || 0 %></strong>
+                        </div>
+                        <div class="flex-between">
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Status</span>
+                            <strong style="font-size: 0.85rem; color: var(--info);">Live Support</strong>
+                        </div>
+                        <div style="margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--text-muted);">
+                            *Rule-based processing intelligence active.
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: OFFLINE TELEMETRY PANELS -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-lg);">
+            
+            <section class="card" style="background: var(--surface-muted); border-style: dashed;">
+                <div class="card-body">
+                    <div class="flex-between" style="margin-bottom: 1rem;">
+                        <h2 style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">System Activity</h2>
+                        <span class="badge">Awaiting Data</span>
+                    </div>
+                    <div style="height: 40px; background: var(--border); border-radius: var(--radius-sm); margin-bottom: 0.5rem; opacity: 0.5;"></div>
+                    <div style="height: 40px; background: var(--border); border-radius: var(--radius-sm); opacity: 0.3;"></div>
+                </div>
+            </section>
+
+            <section class="card" style="background: var(--surface-muted); border-style: dashed;">
+                <div class="card-body">
+                    <div class="flex-between" style="margin-bottom: 1rem;">
+                        <h2 style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">Redistribution Pipeline</h2>
+                        <span class="badge">Awaiting Data</span>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; align-items: center; padding: 1rem; opacity: 0.5;">
+                        <div style="width: 30px; height: 30px; border-radius: 50%; background: var(--border);"></div>
+                        <div style="flex: 1; height: 2px; background: var(--border);"></div>
+                        <div style="width: 30px; height: 30px; border-radius: 50%; background: var(--border);"></div>
+                        <div style="flex: 1; height: 2px; background: var(--border);"></div>
+                        <div style="width: 30px; height: 30px; border-radius: 50%; background: var(--border);"></div>
                     </div>
                 </div>
-            <% } else { %>
-                <p class="text-muted" style="font-size:0.9rem;">No historical sustainability records available yet.</p>
-            <% } %>
-            <p class="text-muted" style="font-size:0.75rem; margin-top: 0.5rem;">Data derived from <%= impact.dataCoverage.completedHandoverRecords + impact.dataCoverage.confirmedUtilizationRecords %> completed actions.</p>
-        </section>
+            </section>
+            
+            <section class="card" style="background: var(--surface-muted); border-style: dashed;">
+                <div class="card-body">
+                    <div class="flex-between" style="margin-bottom: 1rem;">
+                        <h2 style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">Food Categories</h2>
+                        <span class="badge">Awaiting Data</span>
+                    </div>
+                    <div style="display: flex; justify-content: center; padding: 1rem; opacity: 0.5;">
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 10px solid var(--border); border-left-color: var(--text-muted);"></div>
+                    </div>
+                </div>
+            </section>
 
-        <section class="panel">
-            <div class="panel-header">
-                <h2>Traceability Overview (Phase 8)</h2>
-                <span class="badge badge-success">Active</span>
-            </div>
-            <p class="text-muted" style="font-size:0.9rem;">Total lifecycle events recorded: <strong><%= stats.totalTraceabilityEvents || 0 %></strong></p>
-            <p class="text-muted" style="font-size:0.9rem;">Completed verified handovers: <strong><%= stats.completedHandovers || 0 %></strong></p>
-            <p class="text-muted" style="font-size:0.8rem; margin-top: 0.5rem; color: var(--success);">✓ SHA-256 integrity checks enabled</p>
-        </section>
-
-        <section class="panel">
-            <div class="panel-header">
-                <h2>Utilization Pathways (Phase 9)</h2>
-                <span class="badge badge-info">Active</span>
-            </div>
-            <% if (stats.processingRecsCount > 0) { %>
-                <p class="text-muted" style="font-size:0.9rem;">Total recommendations: <strong><%= stats.processingRecsCount %></strong></p>
-            <% } else { %>
-                <p class="text-muted" style="font-size:0.9rem;">Live decision-support recommendations</p>
-            <% } %>
-            <p class="text-muted" style="font-size:0.8rem; margin-top: 0.5rem;">*Rule-based processing intelligence prototype.</p>
-        </section>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions" style="margin-top: 2rem;">
-        <a href="/admin/users" class="btn btn-primary">👥 Manage Network</a>
-        <a href="/admin/listings" class="btn btn-secondary">📋 Manage Listings</a>
-        <a href="/admin/users?role=receiver" class="btn btn-info">✅ Verify NGOs</a>
+        </div>
     </div>
 </div>
 

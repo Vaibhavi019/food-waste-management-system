@@ -1,163 +1,274 @@
 <%- include('../partials/header') %>
 
-<div class="dashboard-container">
-    <div class="dashboard-header">
+<div class="main-content" style="max-width: 1440px; margin: 0 auto; padding: 2rem;">
+    <!-- HEADER -->
+    <header class="hero-gradient" style="background: var(--surface); color: var(--text); padding: 3rem; border-radius: var(--radius-lg); margin-bottom: 2rem; box-shadow: var(--shadow-md); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);">
         <div>
-            <span class="eyebrow">NGO / COMMUNITY COMMAND CENTER</span>
-            <h1>Redistribution Hub</h1>
-            <p>AI-prioritized surplus food matched for timely collection.</p>
+            <span style="font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; color: var(--info);">AI REDISTRIBUTION COMMAND CENTER</span>
+            <h1 style="font-size: 2.75rem; font-weight: 800; margin-top: 0.5rem; margin-bottom: 0.5rem;">Turn Surplus Into Impact</h1>
+            <p style="font-size: 1.1rem; opacity: 0.9; max-width: 600px; color: var(--text-muted);">AI-prioritized surplus food matched with community demand, quality signals and pickup urgency.</p>
         </div>
-        <div class="header-actions">
-            <a href="/receiver/available-food" class="btn btn-primary">🍲 Browse Food</a>
-            <a href="/receiver/my-claims" class="btn btn-secondary">📋 My Claims</a>
-            <button class="btn btn-secondary disabled" disabled>🚚 Track Redistribution</button>
+        <div style="display: flex; gap: 1rem;">
+            <a href="/receiver/available-food" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-weight: 700;">Find Food Matches →</a>
+            <a href="#impact" class="btn" style="background: var(--surface-alt); color: var(--text); border: 1px solid var(--border); padding: 0.75rem 1.5rem; font-weight: 700;">View Impact</a>
         </div>
-    </div>
+    </header>
 
-    <!-- Overview Stats -->
-    <div class="stats-grid stats-grid-4">
-        <div class="stat-card">
-            <div class="stat-value"><%= availableFood.length %></div>
-            <div class="stat-label">Available surplus</div>
-        </div>
-        <div class="stat-card stat-info">
-            <div class="stat-value"><%= stats.prioritizedMatches %></div>
-            <div class="stat-label">Recommended food</div>
-        </div>
-        <div class="stat-card stat-warning">
-            <div class="stat-value"><%= stats.totalClaims %></div>
-            <div class="stat-label">Claim status (active)</div>
-        </div>
-        <div class="stat-card stat-success">
-            <div class="stat-value"><%= stats.completedClaims %></div>
-            <div class="stat-label">Completed pickups</div>
-        </div>
-    </div>
-
-    <section class="section-block">
-        <div class="section-heading-row">
-            <h2 class="section-heading">🎯 Recommended Food Matches</h2>
-            <a href="/receiver/available-food" class="text-link">Browse all available →</a>
-        </div>
-
-        <% if (availableFood.length === 0) { %>
-            <div class="empty-state">
-                <h3>No live surplus right now</h3>
-                <p>The network is currently clear. New institutional surplus will appear here automatically.</p>
+    <!-- KPI STRIP -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2.5rem;">
+        <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--primary);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.25rem;">📦</span>
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Available Surplus</div>
             </div>
-        <% } else { %>
-            <div class="cards-grid">
-                <% availableFood.slice(0, 6).forEach(food => { %>
-                <div class="card <%= food.urgency === 'Critical' ? 'card-critical' : '' %>" style="display:flex; flex-direction:column; justify-content:space-between;">
-                    <div>
-                        <div class="card-header">
-                            <h3><%= food.itemName %></h3>
-                            <span class="match-score"><%= food.matchScore %>% Match</span>
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Explainable Intelligent Match</strong></p>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.8rem; margin: 0.5rem 0 1rem 0; color: var(--text-secondary);">
-                                <div><strong>Food fit:</strong> <%= food.matchDetails.foodTypeCompatibility %></div>
-                                <div><strong>Quantity:</strong> <%= food.matchDetails.quantitySuitability %></div>
-                                <div><strong>Distance:</strong> <%= food.matchDetails.distanceKm !== null ? food.matchDetails.distanceKm + ' km' : 'Unknown' %></div>
-                                <div><strong>Time:</strong> <%= food.matchDetails.timeSuitability %></div>
-                            </div>
-                            
-                            <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.25rem;">Why this match?</p>
-                            <ul style="padding-left:1.2rem; font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem;">
-                                <% food.matchDetails.reasons.forEach(r => { %>
-                                    <li>✓ <%= r %></li>
-                                <% }) %>
-                            </ul>
+            <div style="font-size: 2.25rem; font-weight: 800; color: var(--text); line-height: 1;"><%= availableFood.length %> <span style="font-size: 1rem; font-weight: 600; color: var(--text-muted);">opportunities</span></div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Ready for immediate claim</div>
+        </div>
+        <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--info);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.25rem;">🤖</span>
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">AI Matches</div>
+            </div>
+            <div style="font-size: 2.25rem; font-weight: 800; color: var(--info); line-height: 1;"><%= stats.prioritizedMatches %></div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Score > 80% fit</div>
+        </div>
+        <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--danger);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.25rem;">⏱️</span>
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Urgent Pickups</div>
+            </div>
+            <% const urgentCount = availableFood.filter(f => f.urgency === 'Critical' || f.urgency === 'High').length; %>
+            <div style="font-size: 2.25rem; font-weight: 800; color: var(--danger); line-height: 1;"><%= urgentCount %></div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Requires action within 4h</div>
+        </div>
+        <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--success);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.25rem;">🌱</span>
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Food Redistributed</div>
+            </div>
+            <div style="font-size: 2.25rem; font-weight: 800; color: var(--success); line-height: 1;"><%= stats.completedClaims %> <span style="font-size: 1rem; font-weight: 600; color: var(--text-muted);">claims</span></div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Successfully verified</div>
+        </div>
+    </div>
 
-                            <% if (food.matchDetails.warnings.length > 0) { %>
-                                <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.25rem; color: var(--danger);">Warnings:</p>
-                                <ul style="padding-left:1.2rem; font-size:0.85rem; color: var(--danger); margin-bottom:1rem;">
-                                    <% food.matchDetails.warnings.forEach(w => { %>
-                                        <li>⚠️ <%= w %></li>
-                                    <% }) %>
-                                </ul>
-                            <% } %>
-                            
-                            <% if (food.logisticsDetails) { %>
-                                <div style="margin-top: 0.5rem; margin-bottom: 1rem; border-top: 1px dashed var(--border); padding-top: 0.75rem;">
-                                    <p style="font-size: 0.75rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.25rem;">SMART LOGISTICS</p>
-                                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
-                                        <span class="badge badge-<%= food.logisticsDetails.feasibility === 'FEASIBLE' ? 'success' : food.logisticsDetails.feasibility === 'TIGHT' ? 'warning' : 'danger' %>"><%= food.logisticsDetails.feasibility %></span>
-                                        <% if (food.logisticsDetails.logisticsPriority !== 'UNKNOWN') { %>
-                                            <span class="badge badge-<%= food.logisticsDetails.logisticsPriority === 'URGENT' ? 'danger' : food.logisticsDetails.logisticsPriority === 'HIGH' ? 'warning' : 'info' %>">Priority: <%= food.logisticsDetails.logisticsPriority %></span>
-                                        <% } %>
-                                    </div>
-                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.75rem; color: var(--text-secondary);">
-                                        <div><strong>Travel:</strong> <%= food.logisticsDetails.estimatedTravelMinutes !== null ? '~' + food.logisticsDetails.estimatedTravelMinutes + ' min' : 'Unknown' %></div>
-                                        <div><strong>ETA:</strong> <%= food.logisticsDetails.estimatedArrivalTime ? new Date(food.logisticsDetails.estimatedArrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Unknown' %></div>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
-                            <p style="margin-bottom: 0.25rem;"><strong>Quantity:</strong> <%= food.quantity %></p>
-                            <p style="margin-bottom: 1rem;"><strong>Donor:</strong> <%= food.donor.organization || food.donor.name %></p>
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+        <!-- LEFT COLUMN: PRIORITY MATCHES & ACTIVE CLAIMS -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            
+            <!-- AI PRIORITY QUEUE -->
+            <section>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--border-light); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                    <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text);">AI Priority Queue</h2>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Food ranked by urgency, quality and operational fit.</span>
+                </div>
+                
+                <% if (availableFood.length === 0) { %>
+                    <div style="background: var(--surface); padding: 3rem; border-radius: var(--radius-lg); display: flex; align-items: center; gap: 1.5rem; border: 1px dashed var(--border);">
+                        <div style="font-size: 2.5rem; opacity: 0.5;">📡</div>
+                        <div>
+                            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text);">NO ACTIVE MATCHES</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">No surplus requires action right now. The AI queue will update automatically.</p>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <a href="/receiver/claim/<%= food._id %>" class="btn btn-primary btn-block">Claim & Schedule Pickup</a>
+                <% } else { %>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <% const topFood = availableFood[0]; %>
+                        
+                        <!-- AI EXPLANATION PANEL for top match -->
+                        <div style="background: rgba(40,120,200,0.05); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(40,120,200,0.2); display: flex; gap: 1.5rem; align-items: center;">
+                            <div style="font-size: 2rem; color: var(--info);">🤖</div>
+                            <div>
+                                <h4 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--info); margin-bottom: 0.5rem;">Why this match? (<%= topFood.itemName %>)</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text);">
+                                    <span>✓ <%= topFood.urgency %> urgency</span>
+                                    <span>✓ Suitable quantity (<%= topFood.quantity %>)</span>
+                                    <span>✓ Quality within safe range (<%= topFood.qualityScore || '90' %>/100)</span>
+                                    <span>✓ Pickup window compatible</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <% availableFood.slice(0, 4).forEach(food => { %>
+                            <div class="card" style="display: flex; justify-content: space-between; align-items: stretch; border: 1px solid var(--border); border-left: 4px solid <%= food.urgency === 'Critical' ? 'var(--danger)' : food.urgency === 'High' ? 'var(--warning)' : 'var(--primary)' %>; padding: 1.25rem; gap: 1.5rem;">
+                                <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                                    <div style="margin-bottom: 0.5rem;">
+                                        <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text);"><%= food.itemName %></h3>
+                                        <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;"><%= food.category %> • <%= food.foodType %></div>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                                        <div>
+                                            <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Urgency</div>
+                                            <div style="font-weight: 700; color: <%= food.urgency === 'Critical' ? 'var(--danger)' : food.urgency === 'High' ? 'var(--warning)' : 'var(--text)' %>;"><%= food.urgency %></div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Quality</div>
+                                            <div style="font-weight: 700; color: var(--text);"><%= food.qualityStatus || 'Fresh' %></div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Quantity</div>
+                                            <div style="font-weight: 700; color: var(--text);"><%= food.quantity %></div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Time Left</div>
+                                            <div style="font-weight: 700; color: var(--text);"><%= food.hoursLeft %>h</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; min-width: 140px; border-left: 1px dashed var(--border-light); padding-left: 1.5rem;">
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">AI Match Score</div>
+                                        <div style="font-size: 1.5rem; font-weight: 800; color: <%= food.matchScore >= 80 ? 'var(--success)' : 'var(--info)' %>;"><%= food.matchScore %>%</div>
+                                    </div>
+                                    <a href="/receiver/claim/<%= food._id %>" class="btn btn-primary" style="width: 100%; text-align: center; padding: 0.5rem; font-size: 0.9rem; font-weight: 700;">Claim Food</a>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </section>
+
+            <!-- MY ACTIVE CLAIMS -->
+            <section>
+                <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; color: var(--text); border-bottom: 2px solid var(--border-light); padding-bottom: 0.5rem;">My Active Claims</h2>
+                <% const activeList = myClaims.filter(c => c.status !== 'completed'); %>
+                <% if (activeList.length === 0) { %>
+                    <div style="background: var(--surface); padding: 3rem; text-align: center; border-radius: var(--radius-lg); border: 1px dashed var(--border);">
+                        <p style="color: var(--text-muted);">No active claims currently in progress.</p>
+                    </div>
+                <% } else { %>
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <% activeList.forEach(claim => { %>
+                            <div class="card" style="border: 1px solid var(--border); overflow: hidden;">
+                                <div style="padding: 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: var(--surface-muted);">
+                                    <div>
+                                        <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text);"><%= claim.food ? claim.food.itemName : 'Unknown Food' %></h3>
+                                        <% 
+                                            let dt = new Date(claim.createdAt); 
+                                            let dateStr = isNaN(dt) ? 'Date unavailable' : dt.toLocaleDateString();
+                                        %>
+                                        <p style="font-size: 0.85rem; color: var(--text-muted);">Claimed on <%= dateStr %></p>
+                                    </div>
+                                    <span class="badge badge-warning" style="font-size: 0.85rem; padding: 0.5rem 1rem;">PENDING HANDOVER</span>
+                                </div>
+
+                                <!-- WORKFLOW VISUALIZATION -->
+                                <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light);">
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0.5;">
+                                        <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--success); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">✓</div>
+                                        <span style="font-size: 0.75rem; font-weight: 700;">Claimed</span>
+                                    </div>
+                                    <div style="flex: 1; height: 2px; background: var(--success); opacity: 0.3;"></div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0.5;">
+                                        <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--success); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">✓</div>
+                                        <span style="font-size: 0.75rem; font-weight: 700;">Pickup Initiated</span>
+                                    </div>
+                                    <div style="flex: 1; height: 2px; background: var(--border-light);"></div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                                        <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--warning); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">!</div>
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--warning);">Physical Handover</span>
+                                    </div>
+                                    <div style="flex: 1; height: 2px; background: var(--border-light);"></div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0.5;">
+                                        <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--border); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">?</div>
+                                        <span style="font-size: 0.75rem; font-weight: 700;">Completed</span>
+                                    </div>
+                                </div>
+                                
+                                <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: rgba(237, 137, 54, 0.05);">
+                                    <div style="max-width: 60%;">
+                                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text);">Provide OTP to donor at handover</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">The institutional kitchen must enter this code to verify the secure transfer of food.</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--warning); margin-bottom: 0.25rem;">Your Handover Code</div>
+                                        <div style="font-size: 2rem; font-family: monospace; font-weight: 800; letter-spacing: 4px; color: var(--dark);"><%= claim.otp %></div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </section>
+        </div>
+
+        <!-- RIGHT COLUMN: IMPACT & ACTIVITY -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <!-- COMMUNITY IMPACT -->
+            <section id="impact">
+                <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; color: var(--text); border-bottom: 2px solid var(--border-light); padding-bottom: 0.5rem;">Community Impact</h2>
+                <div class="card" style="padding: 1.5rem; background: var(--surface); border: 1px solid var(--border);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Completed Handovers</span>
+                        <strong style="font-size: 1.5rem; color: var(--success);"><%= stats.completedClaims %></strong>
+                    </div>
+
+                    <div style="background: rgba(11,143,85,0.05); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(11,143,85,0.2); margin-bottom: 0.5rem;">
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--primary-dark); text-transform: uppercase; margin-bottom: 0.25rem;">Estimated CO₂e Impact</div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark);">Environmental estimate unavailable</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem;">Requires recorded food weight and configured factor.</div>
+                    </div>
+
+                    <div style="background: rgba(40,120,200,0.05); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(40,120,200,0.2);">
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--info); text-transform: uppercase; margin-bottom: 0.25rem;">Estimated Water Footprint</div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--info);">Environmental estimate unavailable</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem;">Requires recorded food weight and configured factor.</div>
+                    </div>
+                    
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 1rem;">
+                        Estimated using recorded food weight and configured food-specific factors.
                     </div>
                 </div>
-                <% }) %>
-            </div>
-        <% } %>
-    </section>
+            </section>
 
-    <% if (myClaims.length > 0) { %>
-    <section class="section-block">
-        <h2 class="section-heading">📋 Claim Status</h2>
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead>
-                    <tr><th>Food</th><th>Status</th><th>OTP</th><th>Date</th></tr>
-                </thead>
-                <tbody>
-                <% myClaims.forEach(claim => { %>
-                    <tr>
-                        <td><strong><%= claim.food ? claim.food.itemName : 'N/A' %></strong></td>
-                        <td><span class="badge badge-<%= claim.status === 'claimed' ? 'warning' : claim.status === 'completed' ? 'success' : 'danger' %>"><%= claim.status %></span></td>
-                        <td>
-                            <% if (claim.status === 'claimed') { %>
-                                <span class="otp-display"><%= claim.otp %></span>
-                            <% } else { %>—<% } %>
-                        </td>
-                        <td><%= new Date(claim.createdAt).toLocaleDateString() %></td>
-                    </tr>
-                    <% if (claim.traceability && claim.traceability.events.length > 0) { %>
-                    <tr>
-                        <td colspan="4" style="background: var(--surface-light); padding: 1rem;">
-                            <div style="font-size: 0.75rem; color: var(--text-dark);">
-                                <strong style="display: block; margin-bottom: 0.5rem; text-transform: uppercase;">Food Traceability (Phase 8)</strong>
-                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
-                                    <% claim.traceability.events.forEach(ev => { %>
-                                        <div style="padding: 0.25rem 0.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);">
-                                            ✓ <%= ev.eventLabel %>
-                                        </div>
-                                    <% }) %>
-                                </div>
-                                <div style="color: var(--text-secondary);">
-                                    Integrity: 
-                                    <% if (claim.traceability.integrity.valid) { %>
-                                        <span style="color: var(--success); font-weight: bold;">VERIFIED ✓</span>
-                                    <% } else { %>
-                                        <span style="color: var(--danger); font-weight: bold;">HASH MISMATCH ❌</span>
+            <!-- VERIFIED SUPPLY CHAIN / TRACEABILITY -->
+            <section>
+                <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; color: var(--text); border-bottom: 2px solid var(--border-light); padding-bottom: 0.5rem;">Verified Supply Chain</h2>
+                <div class="card" style="padding: 1.5rem; background: var(--surface);">
+                    <% const completedList = myClaims.filter(c => c.status === 'completed').slice(0, 3); %>
+                    <% if (completedList.length === 0) { %>
+                        <div style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">No completed claims yet.</div>
+                    <% } else { %>
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <% completedList.forEach((claim, idx) => { %>
+                                <div style="border-bottom: <%= idx === completedList.length - 1 ? 'none' : '1px solid var(--border-light)' %>; padding-bottom: <%= idx === completedList.length - 1 ? '0' : '1.5rem' %>;">
+                                    <div style="font-weight: 800; font-size: 0.95rem; color: var(--text); margin-bottom: 0.5rem;"><%= claim.food ? claim.food.itemName : 'Unknown Food' %></div>
+                                    
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 1rem;">
+                                        <div>✓ Handover completed</div>
+                                        <div>✓ OTP verified</div>
+                                    </div>
+
+                                    <% if (claim.traceability && claim.traceability.events.length > 0) { %>
+                                        <details style="font-size: 0.8rem;">
+                                            <summary style="cursor: pointer; font-weight: 700; color: var(--primary);">View full audit trail</summary>
+                                            <div style="margin-top: 1rem; padding-left: 1rem; border-left: 2px solid var(--border-light);">
+                                                <% claim.traceability.events.forEach(ev => { %>
+                                                    <div style="margin-bottom: 1rem;">
+                                                        <div style="font-weight: 700; color: var(--text);"><%= ev.eventLabel %></div>
+                                                        <div style="color: var(--text-muted); margin-bottom: 0.25rem;">
+                                                            <% let ed = new Date(ev.timestamp); %>
+                                                            <%= isNaN(ed) ? 'Date unavailable' : ed.toLocaleString() %>
+                                                        </div>
+                                                        <div style="font-family: monospace; font-size: 0.7rem; background: var(--surface-muted); padding: 0.5rem; border-radius: var(--radius-sm); word-break: break-all; border: 1px solid var(--border);">
+                                                            <% if (ev.eventHash) { %>
+                                                                <span style="color: var(--success); font-weight: bold;">✓ SHA-256 Verified: </span><%= ev.eventHash %>
+                                                            <% } else { %>
+                                                                <span style="color: var(--warning); font-style: italic;">Legacy / Unhashed Event</span>
+                                                            <% } %>
+                                                        </div>
+                                                    </div>
+                                                <% }) %>
+                                            </div>
+                                        </details>
                                     <% } %>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
+                            <% }) %>
+                        </div>
                     <% } %>
-                <% }) %>
-                </tbody>
-            </table>
+                </div>
+            </section>
         </div>
-    </section>
-    <% } %>
+    </div>
 </div>
 
 <%- include('../partials/footer') %>

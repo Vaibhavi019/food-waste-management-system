@@ -6,12 +6,69 @@
  */
 
 const ENVIRONMENTAL_FACTORS = {
-    // Prototype assumption: No validated environmental conversion factor configured.
-    co2ePerKg: null, 
-    
-    // Configurable: null means unavailable/not configured.
-    waterPerKg: null
+    default: {
+        co2ePerKg: null,
+        waterPerKg: null,
+        co2eSource: null,
+        waterSource: null,
+        methodology: "Estimated using recorded food weight and configured food-specific environmental factors."
+    },
+    'Prepared Food': {
+        co2ePerKg: null,
+        waterPerKg: null,
+        co2eSource: null,
+        waterSource: null,
+        methodology: "Estimated using recorded food weight and configured food-specific environmental factors."
+    },
+    'Vegetables': {
+        co2ePerKg: 0.53,
+        waterPerKg: 322,
+        co2eSource: "Our World in Data / Poore & Nemecek (2018)",
+        waterSource: "Water Footprint Network",
+        methodology: "Estimated using recorded food weight and configured food-specific environmental factors."
+    },
+    'Rice': {
+        co2ePerKg: 4.45,
+        waterPerKg: 2497,
+        co2eSource: "Our World in Data / Poore & Nemecek (2018)",
+        waterSource: "Water Footprint Network",
+        methodology: "Estimated using recorded food weight and configured food-specific environmental factors."
+    },
+    'Poultry': {
+        co2ePerKg: 9.87,
+        waterPerKg: 4325,
+        co2eSource: "Our World in Data / Poore & Nemecek (2018)",
+        waterSource: "Water Footprint Network",
+        methodology: "Estimated using recorded food weight and configured food-specific environmental factors."
+    }
 };
+
+/**
+ * Resolves the most specific environmental factor for a food listing.
+ * Priority: food-specific (itemName) -> category -> foodType -> default -> unavailable
+ */
+function getEnvironmentalFactor(listing) {
+    let factor = ENVIRONMENTAL_FACTORS.default;
+    let factorKey = 'default';
+
+    if (!listing) {
+        return { ...factor, factorKey, available: factor.co2ePerKg !== null || factor.waterPerKg !== null };
+    }
+
+    if (listing.itemName && ENVIRONMENTAL_FACTORS[listing.itemName]) {
+        factor = ENVIRONMENTAL_FACTORS[listing.itemName];
+        factorKey = listing.itemName;
+    } else if (listing.category && ENVIRONMENTAL_FACTORS[listing.category]) {
+        factor = ENVIRONMENTAL_FACTORS[listing.category];
+        factorKey = listing.category;
+    } else if (listing.foodType && ENVIRONMENTAL_FACTORS[listing.foodType]) {
+        factor = ENVIRONMENTAL_FACTORS[listing.foodType];
+        factorKey = listing.foodType;
+    }
+
+    const available = factor.co2ePerKg !== null || factor.waterPerKg !== null;
+    return { ...factor, factorKey, available };
+}
 
 /**
  * Parses events and listings to calculate confirmed diversion
@@ -22,10 +79,12 @@ const ENVIRONMENTAL_FACTORS = {
 function getSustainabilityAnalytics(context = {}) {
     const { events = [], listings = [] } = context;
 
-    let foodDivertedKg = 0;
-    let redistributedKg = 0;
-    let processedKg = 0;
-    let organicRecoveryKg = 0;
+    let foodDiverted = 0;
+    let foodDivertedUnit = 'portions';
+    let totalWeightKg = 0;
+    let redistributed = 0;
+    let processed = 0;
+    let organicRecovery = 0;
 
     const utilizationBreakdown = {
         REDISTRIBUTION: 0,
@@ -35,9 +94,7 @@ function getSustainabilityAnalytics(context = {}) {
 
     const warnings = [];
     const assumptions = [
-        "Environmental impact values are estimates derived from configured assumptions and should not be interpreted as measured site-specific impacts.",
-        `CO2e factor: ${ENVIRONMENTAL_FACTORS.co2ePerKg ? ENVIRONMENTAL_FACTORS.co2ePerKg + ' kg CO2e/kg' : 'Unavailable'}.`,
-        `Water footprint factor: ${ENVIRONMENTAL_FACTORS.waterPerKg ? ENVIRONMENTAL_FACTORS.waterPerKg + ' L/kg' : 'Unavailable'}.`
+        "Environmental impact values are estimates derived from configured assumptions and should not be interpreted as measured site-specific impacts."
     ];
 
     const dataCoverage = {
@@ -45,7 +102,7 @@ function getSustainabilityAnalytics(context = {}) {
         completedHandoverRecords: 0,
         confirmedUtilizationRecords: 0,
         recommendationRecords: 0,
-        environmentalFactorsConfigured: ENVIRONMENTAL_FACTORS.co2ePerKg !== null
+        environmentalFactorsConfigured: Object.values(ENVIRONMENTAL_FACTORS).some(f => f.co2ePerKg !== null)
     };
 
     let filteredEvents = events;
@@ -63,7 +120,7 @@ function getSustainabilityAnalytics(context = {}) {
 
     filteredEvents.forEach(ev => {
         if (!ev) return;
-        
+
         if (ev.eventType === 'UTILIZATION_PATHWAY_RECOMMENDED') {
             dataCoverage.recommendationRecords++;
             return; // Recommendations do not count towards actual diversion
@@ -73,18 +130,51 @@ function getSustainabilityAnalytics(context = {}) {
         if (!listingId) return;
 
         // Determine authoritative quantity
-        const listing = listings.find(l => l._id && l._id.toString() === listingId);
-        // Use surplusQuantity if available, fallback to quantity, fallback to 0
-        let qty = 0;
-        if (listing) {
-            qty = Number(listing.surplusQuantity) || Number(listing.quantity) || 0;
-        }
+        // Determine authoritative quantity.
+        // Structured surplusQuantity is preferred because it is numeric.
+        // The legacy `quantity` field is a human-readable string and is
+        // intentionally not parsed here.
+        // Determine the authoritative quantity for sustainability calculations.
+        const listing = listings.find(
+            l => l._id && l._id.toString() === listingId
+        );
 
+        let qty = 0;
+        let itemWeight = 0;
+        let itemUnit = 'portions';
+
+        if (listing) {
+            itemUnit = listing.unit || 'portions';
+            
+            // Preferred: structured surplus quantity.
+            if (Number(listing.surplusQuantity) > 0) {
+                qty = Number(listing.surplusQuantity);
+            } else {
+                // Backward compatibility for older listings.
+                // Examples:
+                // "10"
+                // "25"
+                // "50 portions"
+                const rawQuantity = String(listing.quantity || '');
+
+                const match = rawQuantity.match(/[\d.]+/);
+
+                if (match) {
+                    qty = Number(match[0]) || 0;
+                }
+            }
+            
+            if (Number(listing.weightKg) > 0) {
+                itemWeight = Number(listing.weightKg);
+            }
+        }
         if (ev.eventType === 'HANDOVER_COMPLETED') {
             dataCoverage.completedHandoverRecords++;
             if (!processedListings.has(listingId)) {
-                redistributedKg += qty;
-                foodDivertedKg += qty;
+                redistributed += qty;
+                foodDiverted += qty;
+                totalWeightKg += itemWeight;
+                foodDivertedUnit = itemUnit;
                 utilizationBreakdown.REDISTRIBUTION += qty;
                 processedListings.add(listingId);
             }
@@ -92,48 +182,100 @@ function getSustainabilityAnalytics(context = {}) {
 
         if (ev.eventType === 'UTILIZATION_PATHWAY_CONFIRMED') {
             dataCoverage.confirmedUtilizationRecords++;
-            
+
             // The pathway should be in metadata.confirmedPath
             const path = ev.metadata && ev.metadata.confirmedPath ? ev.metadata.confirmedPath : 'UNKNOWN';
-            
+
             if (!processedListings.has(listingId)) {
                 if (path === 'PROCESS_UPCYCLE') {
-                    processedKg += qty;
+                    processed += qty;
                     utilizationBreakdown.PROCESS_UPCYCLE += qty;
-                    foodDivertedKg += qty;
+                    foodDiverted += qty;
+                    totalWeightKg += itemWeight;
+                    foodDivertedUnit = itemUnit;
                     processedListings.add(listingId);
                 } else if (path === 'ORGANIC_RECOVERY') {
-                    organicRecoveryKg += qty;
+                    organicRecovery += qty;
                     utilizationBreakdown.ORGANIC_RECOVERY += qty;
-                    foodDivertedKg += qty;
+                    foodDiverted += qty;
+                    totalWeightKg += itemWeight;
+                    foodDivertedUnit = itemUnit;
                     processedListings.add(listingId);
                 } else if (path === 'REDISTRIBUTION') {
                     // In case confirmed via utilization instead of normal handover
-                    redistributedKg += qty;
+                    redistributed += qty;
                     utilizationBreakdown.REDISTRIBUTION += qty;
-                    foodDivertedKg += qty;
+                    foodDiverted += qty;
+                    totalWeightKg += itemWeight;
+                    foodDivertedUnit = itemUnit;
                     processedListings.add(listingId);
                 }
             }
         }
     });
 
-    if (foodDivertedKg === 0 && events.length > 0) {
+    if (foodDiverted === 0 && events.length > 0) {
         warnings.push("No confirmed recovery/redistribution records yet.");
     } else if (events.length === 0) {
         warnings.push("No historical sustainability records available yet.");
     }
+    
+    if (totalWeightKg === 0 && foodDiverted > 0) {
+        warnings.push("No reliable weight (kg) data available for environmental impact calculations.");
+    }
+
+    let totalCo2e = null;
+    let totalWater = null;
+    const co2eSources = new Set();
+    const waterSources = new Set();
+    let hasCo2eFactor = false;
+    let hasWaterFactor = false;
+    const methodologies = new Set();
+
+    processedListings.forEach(listingId => {
+        const listing = listings.find(l => l._id && l._id.toString() === listingId);
+        if (listing && Number(listing.weightKg) > 0) {
+            const w = Number(listing.weightKg);
+            const factorData = getEnvironmentalFactor(listing);
+            
+            if (factorData.methodology) methodologies.add(factorData.methodology);
+            
+            if (factorData.co2ePerKg !== null) {
+                totalCo2e = (totalCo2e || 0) + (w * factorData.co2ePerKg);
+                hasCo2eFactor = true;
+                if (factorData.co2eSource) co2eSources.add(factorData.co2eSource);
+            }
+            
+            if (factorData.waterPerKg !== null) {
+                totalWater = (totalWater || 0) + (w * factorData.waterPerKg);
+                hasWaterFactor = true;
+                if (factorData.waterSource) waterSources.add(factorData.waterSource);
+            }
+        }
+    });
+
+    const factorCoverage = {
+        co2e: hasCo2eFactor ? 'Environmental factor configured' : 'No validated factor configured',
+        water: hasWaterFactor ? 'Environmental factor configured' : 'No validated factor configured'
+    };
 
     const estimatedImpact = {
-        co2eAvoidedKg: ENVIRONMENTAL_FACTORS.co2ePerKg !== null ? (foodDivertedKg * ENVIRONMENTAL_FACTORS.co2ePerKg) : null,
-        waterAvoidedLiters: ENVIRONMENTAL_FACTORS.waterPerKg !== null ? (foodDivertedKg * ENVIRONMENTAL_FACTORS.waterPerKg) : null
+        totalWeightKg,
+        co2eAvoidedKg: totalCo2e,
+        waterAvoidedLiters: totalWater,
+        co2eFactorSource: co2eSources.size > 0 ? Array.from(co2eSources).join(', ') : null,
+        waterFactorSource: waterSources.size > 0 ? Array.from(waterSources).join(', ') : null,
+        methodologies: Array.from(methodologies),
+        factorCoverage
     };
 
     return {
-        foodDivertedKg,
-        redistributedKg,
-        processedKg,
-        organicRecoveryKg,
+        foodDiverted,
+        foodDivertedUnit,
+        totalWeightKg,
+        redistributed,
+        processed,
+        organicRecovery,
         utilizationBreakdown,
         estimatedImpact,
         dataCoverage,
@@ -144,5 +286,6 @@ function getSustainabilityAnalytics(context = {}) {
 
 module.exports = {
     getSustainabilityAnalytics,
+    getEnvironmentalFactor,
     ENVIRONMENTAL_FACTORS
 };
