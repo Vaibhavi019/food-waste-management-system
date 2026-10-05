@@ -13,7 +13,7 @@ router.post('/register', async (req, res) => {
         const { name, username, email, phone, password, confirmPassword, role, organization, latitude, longitude } = req.body;
 
         // Validation
-        if (!name || !username || !email || !phone || !password || !role) {
+        if (!name || !username || !email || !phone || !password || !confirmPassword || !role) {
             req.session.error = 'All fields are required.';
             return res.redirect('/register');
         }
