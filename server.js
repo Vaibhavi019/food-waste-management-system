@@ -116,8 +116,8 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/foodwaste')
             }
         }, 60 * 1000); // every 60 seconds
 
-        app.listen(PORT, () => {
-            console.log(`Server running on http://localhost:${PORT}`);
+        app.listen(PORT, '0.0.0.0', () => {
+            console.log(`SANCHARI server running on port ${PORT}`);
         });
     })
     .catch(err => {
